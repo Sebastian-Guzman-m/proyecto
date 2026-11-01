@@ -7,9 +7,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h6>inicio de sesion</h6>
-<br>
-    <p>primera vez</p> <a href="crearcuenta">Crear cuenta</a>
+<section id="login-screen" class="auth-screen auth-login">
+  <p>primera vez</p> <a href="#register-screen">Crear cuenta</a>
 
     <h1>que bueno verte</h1>
     <h4>inicia sesion para volver al mapa</h4>
@@ -25,8 +24,8 @@
 
     <a href="---">olvidaste tu contraseña?</a>
 <br><br><br>
-    <input type="submit">
-    <label for="iniciarsesion">iniciar sesion</label>
+    <input type="button">
+    <label for="inicia sesion">iniciar sesion</label>
 <br>
     <div id="g_id_onload"
      data-client_id="TU_CLIENT_ID.apps.googleusercontent.com"
@@ -42,12 +41,10 @@
 <a href="google">aqui va estar google cabron</a>
 
 <h6>al contnuar, aceptas nuestros terminos y politicas de privacidad.</h6>
-<br><br><br>
+</section>
 
-    <h6>crear cuenta nuevecita</h6>
-<br>
-
-    <label for="nombre">nombre completo</label>
+<section id="register-screen" class="auth-screen auth-register">
+  <label for="nombre">nombre completo</label>
     <input type="text" name="nombre" id="nombre">
 <br><br>
     <label for="correo">correo electronico</label>
@@ -62,8 +59,8 @@
     <input type="checkbox" name="terminos" id="terminos">
     <label for="terminos">acepta los <a href="terminosdeservicio">terminos de servicio</a> y la <a href="politica">politica de privacidad</a></label>
 <br>
-    <input type="submit" name="crearcuenta" id="crearcuenta">
-    <label for="crearcuenta">crear cuenta</label>
+    <input type="button">
+    <label for="crear cuenta">crear cuenta</label>
 <br>
     <div id="g_id_onload"
      data-client_id="TU_CLIENT_ID.apps.googleusercontent.com"
@@ -77,8 +74,7 @@
      data-theme="outline">
 </div>
 <a href="google">aqui va estar google cabron (otra vez)</a>
-<br><br><br>
-
-
+</section>
+    
 </body> 
 </html>
