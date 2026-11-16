@@ -34,6 +34,14 @@
         }).addTo(vista);
         teselas.on("tileerror", () => informar("No se pudo cargar una parte del mapa. Comprueba tu conexión."));
     }
+    const crearIcono = (nombre) => L.icon({
+        iconUrl: `imagenes/iconos/${nombre}.svg`,
+        iconSize: [32, 44],
+        iconAnchor: [16, 43],
+        popupAnchor: [0, -38]
+    });
+    const iconoPin = crearIcono("pin-mapa");
+    const iconoSeleccion = crearIcono("pin-seleccion");
     const marcadores = L.layerGroup().addTo(mapa);
 
     function guardar() {
@@ -48,7 +56,7 @@
     function dibujar() {
         marcadores.clearLayers();
         for (const pin of pines) {
-            const marcador = L.marker([pin.lat, pin.lng], { draggable: true, title: pin.nombre }).addTo(marcadores);
+            const marcador = L.marker([pin.lat, pin.lng], { icon: iconoPin, draggable: true, title: pin.nombre }).addTo(marcadores);
             const contenido = document.createElement("div");
             const titulo = document.createElement("strong");
             titulo.textContent = pin.nombre;
@@ -77,7 +85,7 @@
         punto = posicion.wrap();
         if (seleccion) seleccion.setLatLng(punto);
         else {
-            seleccion = L.marker(punto, { draggable: true, title: "Punto de encuentro" }).addTo(creador);
+            seleccion = L.marker(punto, { icon: iconoSeleccion, draggable: true, title: "Punto de encuentro" }).addTo(creador);
             seleccion.on("dragend", () => elegir(seleccion.getLatLng()));
         }
         ubicacion.textContent = `Punto seleccionado: ${punto.lat.toFixed(5)}, ${punto.lng.toFixed(5)}`;
