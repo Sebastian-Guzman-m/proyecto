@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#080d17">
         <title>Nexo — planes cerca de ti</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
         <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -87,6 +88,7 @@
         <a class="boton boton-principal boton-pequeno" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear pin</a><a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.avif" alt=""></a>
         </div>
         </header>
+        <p id="estado-mapa" class="estado-mapa" role="status">Haz clic en el mapa para crear un pin. Tus pines se guardan en este navegador.</p>
         <div class="distribucion-aplicacion">
         <aside class="barra-lateral" aria-label="Navegación principal">
         <a class="elemento-navegacion activo" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa-amarillo.svg" alt=""></span>Mapa</a> <a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Mis planes</a> <a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes<span class="contador-navegacion">3</span></a> <a class="perfil-lateral enlace-perfil-lateral" href="#pantalla-perfil"><img class="avatar-usuario" src="imagenes/avatar.avif" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil</small></span><span class="indicador-perfil"><img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></span></a>
@@ -102,7 +104,7 @@
         <p class="texto-secundario descripcion-panel">Explora los planes que pasan cerca de ti</p>
         <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan futbol"><img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></span><span class="titulo-tarjeta-plan">Tarde de fútbol</span> <span class="ubicacion-plan">La Sabana · cancha 2</span><span class="datos-plan">7 nov · 4:30 p. m. <span>8 personas</span></span> </a> <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan lectura"><img class="icono" src="imagenes/iconos/destello-rosa.svg" alt=""></span><span class="titulo-tarjeta-plan">Club de lectura</span> <span class="ubicacion-plan">Café Miel · Escalante</span><span class="datos-plan">Mañana · 6:00 p. m. <span>5 personas</span></span> </a> <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan ciclismo"><img class="icono" src="imagenes/iconos/destello-cian.svg" alt=""></span><span class="titulo-tarjeta-plan">Paseo en bici</span> <span class="ubicacion-plan">Parque Francia</span><span class="datos-plan">Sáb, 7 nov · 8:00 a. m. <span>12 personas</span></span> </a> <a class="enlace-todos-planes" href="#mis-planes">Ver todos mis planes <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
         </aside>
-        <div class="area-mapa" id="contenedor-mapa"> </div>
+        <div class="area-mapa mapa-interactivo" id="contenedor-mapa" aria-label="Mapa de planes"></div>
         </div>
     </section>
 
@@ -120,18 +122,18 @@
         <aside class="barra-lateral" aria-label="Navegación principal">
         <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a><a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Mis planes</a><a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes</a>
         </aside>
-        <div class="mapa-creacion area-mapa"> </div>
+        <div class="mapa-creacion area-mapa mapa-interactivo" id="mapa-creacion" aria-label="Seleccionar punto de encuentro"></div>
         <div class="panel-formulario-creacion">
-        <div class="etiqueta-paso">PASO 1 DE 2</div>
+        <div class="etiqueta-paso">CREAR PIN</div>
         <h1>Elige el punto de encuentro</h1>
         <div class="direccion-seleccionada">
-        <strong>Cancha 2 · La Sabana</strong><a href="#pantalla-mapa" aria-label="Cambiar ubicación">Cambiar</a>
+        <strong id="ubicacion-pin">Haz clic en el mapa para elegir un punto</strong>
         </div>
         <form class="formulario-plan" action="#pantalla-mapa">
         <h2>Crea un encuentro</h2>
         <p class="texto-secundario">Cuéntale a la gente qué van a hacer y cuándo.</p>
         <label for="nombre-plan">¿Qué plan tienes en mente?</label>
-        <input id="nombre-plan" type="text" placeholder="Ej. Tarde de fútbol" value="Tarde de fútbol">
+        <input id="nombre-plan" required maxlength="120" type="text" placeholder="Ej. Tarde de fútbol" value="Tarde de fútbol">
 
         <div class="fila-formulario">
         <div>
@@ -150,10 +152,10 @@
         <legend>Visibilidad</legend><label class="opcion-visibilidad">
         <input type="radio" name="visibilidad" checked>
 
-        <span class="icono-opcion"><img class="icono" src="imagenes/iconos/circulo-punto-amarillo.svg" alt=""></span><span><strong>Público</strong><small>Cualquier persona puede ver y unirse al pin</small></span></label></fieldset>
+        <span class="icono-opcion"><img class="icono" src="imagenes/iconos/circulo-punto-amarillo.svg" alt=""></span><span><strong>Solo en este navegador</strong><small>Este pin todavía no se comparte con otros usuarios</small></span></label></fieldset>
         <div class="fila-publicacion">
-        <p>Al publicar, el pin aparecerá en el mapa para todos.</p>
-        <a class="boton boton-principal" href="#pantalla-mapa">Publicar pin <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></a>
+        <p>El pin se guarda en este navegador. Puedes moverlo o eliminarlo desde el mapa.</p>
+        <button class="boton boton-principal" type="submit">Publicar pin <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
         </div>
         </form>
         </div>
@@ -582,5 +584,7 @@
 
         <div id="nota-terminos" class="oculto-visualmente">Términos de servicio pendientes de redactar.</div>
         <div id="nota-privacidad" class="oculto-visualmente">Política de privacidad pendiente de redactar.</div>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script defer src="javascript/mapa.js"></script>
 </body>
 </html>

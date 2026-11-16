@@ -1621,3 +1621,15 @@ a.avatar-usuario img { width: 100%; height: 100%; object-fit: cover; }
 .personas-vista-previa img { width: 18px; height: 18px; border-radius: 50%; }
 
 .personas-vista-previa span { margin-left: 5px; }
+
+/* Mapa interactivo: Leaflet mantiene sus controles dentro de cada pantalla. */
+.mapa-interactivo { min-height: 420px; height: 100%; z-index: 0; }
+.estado-mapa { margin: 0; padding: 10px 24px; color: #e6e6e6; background: #151218; font-size: 13px; }
+#pantalla-mapa .distribucion-aplicacion { height: calc(100svh - 110px); }
+.mapa-interactivo .leaflet-popup-content { color: #17212b; line-height: 1.5; }
+.mapa-interactivo .leaflet-popup-content strong { display: block; margin-bottom: 8px; }
+.mapa-interactivo .leaflet-popup-content button { display: block; margin-top: 12px; padding: 8px 12px; cursor: pointer; }
+.mapa-interactivo .leaflet-control-attribution a { color: #006278; }
+@media (max-width: 760px) {
+    #contenedor-mapa, #mapa-creacion { height: 60svh; min-height: 360px; }
+}
