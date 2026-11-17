@@ -104,7 +104,7 @@
         <p class="texto-secundario descripcion-panel">Explora los planes que pasan cerca de ti</p>
         <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan futbol"><img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></span><span class="titulo-tarjeta-plan">Tarde de fútbol</span> <span class="ubicacion-plan">La Sabana · cancha 2</span><span class="datos-plan">7 nov · 4:30 p. m. <span>8 personas</span></span> </a> <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan lectura"><img class="icono" src="imagenes/iconos/destello-rosa.svg" alt=""></span><span class="titulo-tarjeta-plan">Club de lectura</span> <span class="ubicacion-plan">Café Miel · Escalante</span><span class="datos-plan">Mañana · 6:00 p. m. <span>5 personas</span></span> </a> <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan ciclismo"><img class="icono" src="imagenes/iconos/destello-cian.svg" alt=""></span><span class="titulo-tarjeta-plan">Paseo en bici</span> <span class="ubicacion-plan">Parque Francia</span><span class="datos-plan">Sáb, 7 nov · 8:00 a. m. <span>12 personas</span></span> </a> <a class="enlace-todos-planes" href="#mis-planes">Ver todos mis planes <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
         </aside>
-        <div class="area-mapa mapa-interactivo" id="contenedor-mapa" aria-label="Mapa de planes"></div>
+        <div class="area-mapa espacio-mapa" id="espacio-mapa-principal"><div class="mapa-interactivo" id="contenedor-mapa" aria-label="Mapa de planes"></div></div>
         </div>
     </section>
 
@@ -122,7 +122,7 @@
         <aside class="barra-lateral" aria-label="Navegación principal">
         <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a><a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Mis planes</a><a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes</a>
         </aside>
-        <div class="mapa-creacion area-mapa mapa-interactivo" id="mapa-creacion" aria-label="Seleccionar punto de encuentro"></div>
+        <div class="mapa-creacion area-mapa espacio-mapa" id="espacio-mapa-creacion"></div>
         <div class="panel-formulario-creacion">
         <div class="etiqueta-paso">CREAR PIN</div>
         <h1>Elige el punto de encuentro</h1>
@@ -173,7 +173,7 @@
         </div>
         </header>
         <div class="area-detalle">
-        <div class="mapa-detalle area-mapa">
+        <div class="mapa-detalle area-mapa espacio-mapa" id="espacio-mapa-detalle">
         <a class="volver-mapa" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda.svg" alt=""> Volver al mapa</a>
         </div>
         <aside class="tarjeta-detalle">

@@ -26,14 +26,17 @@
     }
 
     const mapa = L.map("contenedor-mapa").setView(centro, 13);
-    const creador = L.map("mapa-creacion").setView(centro, 13);
-    for (const vista of [mapa, creador]) {
-        const teselas = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    const contenedor = document.getElementById("contenedor-mapa");
+    const espacios = {
+        "#pantalla-mapa": document.getElementById("espacio-mapa-principal"),
+        "#crear-plan": document.getElementById("espacio-mapa-creacion"),
+        "#detalle-plan": document.getElementById("espacio-mapa-detalle")
+    };
+    const teselas = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(vista);
-        teselas.on("tileerror", () => informar("No se pudo cargar una parte del mapa. Comprueba tu conexión."));
-    }
+        }).addTo(mapa);
+    teselas.on("tileerror", () => informar("No se pudo cargar una parte del mapa. Comprueba tu conexión."));
     const crearIcono = (nombre) => L.icon({
         iconUrl: `imagenes/iconos/${nombre}.svg`,
         iconSize: [32, 44],
@@ -85,16 +88,15 @@
         punto = posicion.wrap();
         if (seleccion) seleccion.setLatLng(punto);
         else {
-            seleccion = L.marker(punto, { icon: iconoSeleccion, draggable: true, title: "Punto de encuentro" }).addTo(creador);
+            seleccion = L.marker(punto, { icon: iconoSeleccion, draggable: true, title: "Punto de encuentro" }).addTo(mapa);
             seleccion.on("dragend", () => elegir(seleccion.getLatLng()));
         }
         ubicacion.textContent = `Punto seleccionado: ${punto.lat.toFixed(5)}, ${punto.lng.toFixed(5)}`;
     }
-    creador.on("click", (evento) => elegir(evento.latlng));
     mapa.on("click", (evento) => {
+        if (location.hash === "#detalle-plan") return;
         elegir(evento.latlng);
-        location.hash = "crear-plan";
-        requestAnimationFrame(() => { creador.invalidateSize(); creador.setView(punto, mapa.getZoom()); });
+        if (location.hash !== "#crear-plan") location.hash = "crear-plan";
     });
 
     formulario.addEventListener("submit", (evento) => {
@@ -116,7 +118,7 @@
         guardar();
         dibujar();
         formulario.reset();
-        creador.removeLayer(seleccion);
+        mapa.removeLayer(seleccion);
         seleccion = null;
         punto = null;
         ubicacion.textContent = "Haz clic en el mapa para elegir un punto";
@@ -124,21 +126,26 @@
         requestAnimationFrame(() => { mapa.invalidateSize(); mapa.setView(destino, 15); });
     });
 
-    // Las pantallas se muestran por el hash: Leaflet recalcula su tamaño al entrar.
+    // Se mueve el mismo contenedor entre pantallas sin crear otro mapa.
+    // Leaflet conserva las teselas, el acercamiento y la posición de la cámara.
     function actualizarVista() {
-        requestAnimationFrame(() => {
-            if (location.hash === "#pantalla-mapa") mapa.invalidateSize();
-            if (location.hash === "#crear-plan") {
-                creador.invalidateSize();
-                if (punto) creador.setView(punto, 15);
-            }
-        });
+        const espacio = espacios[location.hash];
+        if (!espacio) return;
+        if (contenedor.parentElement !== espacio) espacio.appendChild(contenedor);
+        if (seleccion) {
+            if (location.hash === "#crear-plan") seleccion.addTo(mapa);
+            else mapa.removeLayer(seleccion);
+        }
+        contenedor.setAttribute("aria-label", location.hash === "#crear-plan"
+            ? "Seleccionar punto de encuentro" : "Mapa de planes");
+        requestAnimationFrame(() => mapa.invalidateSize({ pan: false }));
     }
     window.addEventListener("hashchange", actualizarVista);
     if (window.ResizeObserver) {
-        const observador = new ResizeObserver(actualizarVista);
-        observador.observe(document.getElementById("contenedor-mapa"));
-        observador.observe(document.getElementById("mapa-creacion"));
+        const observador = new ResizeObserver(() => {
+            if (espacios[location.hash]) mapa.invalidateSize({ pan: false });
+        });
+        observador.observe(contenedor);
     }
     dibujar();
     actualizarVista();
