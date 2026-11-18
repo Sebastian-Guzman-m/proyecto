@@ -1,4 +1,7 @@
+// Administra una conversación por pin y guarda los mensajes en el navegador.
+// El chat de fútbol que aparece en el HTML sirve como contenido inicial de ejemplo.
 (() => {
+    // Claves del almacenamiento local y elementos de la pantalla de chat.
     const CLAVE_PINES = "nexo.pines.v1";
     const CLAVE_MENSAJES = "nexo-chat-mensajes-v1";
     const CLAVE_PIN_ACTIVO = "nexo.chat.pin-seleccionado";
@@ -18,6 +21,7 @@
     const iconoConversacion = conversacion.querySelector(".encabezado-conversacion .icono-chat");
     const enlaceDetalles = conversacion.querySelector(".enlace-detalles-chat");
     const detallesChat = distribucion.querySelector(".detalles-chat");
+    // Lee el avatar y los mensajes de muestra antes de reemplazar el HTML dinámico.
     const iconoAvatar = listaMensajes.querySelector(".mensaje .avatar-persona")?.getAttribute("src") || "imagenes/avatar.svg";
     const separadorDemo = listaMensajes.querySelector(".separador-fecha")?.textContent.trim() || "MENSAJES DEL GRUPO";
     const notaSistemaDemo = listaMensajes.querySelector(".mensaje-sistema")?.textContent.trim() || "";
@@ -33,10 +37,12 @@
         "demo-bici": "ciclismo"
     };
 
+    // Estado actual: pines visibles, conversaciones por ID y pin seleccionado.
     let pines = [];
     let chats = new Map();
     let pinActivo = null;
 
+    // Lee datos JSON sin detener la página si el almacenamiento está dañado o bloqueado.
     function leerJSON(clave, alternativa) {
         try {
             const valor = localStorage.getItem(clave);
@@ -46,6 +52,7 @@
         }
     }
 
+    // Acepta solo listas y mensajes con los campos mínimos que usa esta pantalla.
     function validarPines(datos) {
         if (!Array.isArray(datos)) return [];
         return datos.filter((pin) => pin && typeof pin.id === "string" && typeof pin.nombre === "string");
@@ -66,6 +73,7 @@
             }));
     }
 
+    // Prepara la hora y los datos del pin para mostrarlos en formato breve.
     function horaActual() {
         return new Date().toLocaleTimeString("es-CR", { hour: "numeric", minute: "2-digit" });
     }
@@ -82,6 +90,7 @@
         return { ubicacion, fecha, personas };
     }
 
+    // Guarda todos los chats por ID de pin para que cada grupo tenga su historial.
     function guardarMensajes() {
         const datos = Object.fromEntries([...chats].map(([id, chat]) => [id, chat.mensajes]));
         try {
@@ -108,6 +117,7 @@
         }
     }
 
+    // Usa mensajes guardados; si no hay, recupera los del chat de ejemplo de fútbol.
     function inicializarMensajes(pin, almacenados) {
         const directos = limpiarMensajes(almacenados?.[pin.id]);
         if (directos) return directos;
@@ -128,14 +138,17 @@
         };
     }
 
+    // La categoría elegida define el icono. Los pines antiguos pueden usar el título.
     function categoriaIcono(pin) {
-        const texto = `${pin.nombre || ""} ${pin.categoria || ""}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const categoria = typeof pin.categoria === "string" ? pin.categoria.trim() : "";
+        const texto = (categoria || pin.nombre).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         if (/futbol|deporte/.test(texto)) return { clase: "futbol", archivo: "destello-amarillo.svg" };
         if (/lectura|libro|cultura/.test(texto)) return { clase: "lectura", archivo: "destello-rosa.svg" };
-        if (/bici|ciclismo|aire libre/.test(texto)) return { clase: "ciclismo", archivo: "destello-cian.svg" };
+        if (/bici|ciclismo|aire[ -]libre/.test(texto)) return { clase: "ciclismo", archivo: "destello-cian.svg" };
         return { clase: "generico", archivo: "destello.svg" };
     }
 
+    // Crea elementos de interfaz con texto seguro y el icono correspondiente.
     function crearIcono(pin) {
         const tipo = categoriaIcono(pin);
         const icono = document.createElement("span");
@@ -174,6 +187,7 @@
         return enlace;
     }
 
+    // Muestra una fila por pin y un mensaje de ayuda cuando aún no hay conversaciones.
     function renderizarLista() {
         contenedorConversaciones.replaceChildren();
         if (contadorConversaciones) contadorConversaciones.textContent = String(pines.length);
@@ -194,6 +208,7 @@
         pines.forEach((pin) => contenedorConversaciones.append(crearEnlaceConversacion(pin)));
     }
 
+    // Construye una burbuja de mensaje. Los mensajes propios tienen otro estilo.
     function crearMensaje(mensaje) {
         const articulo = document.createElement("article");
         articulo.className = `mensaje${mensaje.sent ? " enviado" : ""}`;
@@ -223,6 +238,7 @@
         return articulo;
     }
 
+    // Rellena el panel lateral con datos del pin y un enlace a su ficha en el mapa.
     function renderizarDetalles(pin) {
         detallesChat.replaceChildren();
         if (!pin) {
@@ -271,6 +287,7 @@
         detallesChat.append(etiqueta, titulo, fecha, ubicacion, descripcion, nota, mapa);
     }
 
+    // Actualiza el encabezado, el historial, el formulario y los detalles del chat activo.
     function renderizarConversacion() {
         const chat = chats.get(pinActivo);
         const pin = chat?.pin || null;
@@ -322,6 +339,7 @@
         renderizarDetalles(pin);
     }
 
+    // Cambia de conversación y recuerda la selección si el navegador lo permite.
     function seleccionarPin(id, persistir = true) {
         pinActivo = chats.has(id) ? id : pines[0]?.id || null;
         if (persistir) guardarPinActivo();
@@ -329,6 +347,7 @@
         renderizarConversacion();
     }
 
+    // Mantiene los chats que siguen teniendo pin y crea chats para los nuevos.
     function sincronizarPines(datos) {
         const nuevosPines = validarPines(datos);
         const almacenados = leerJSON(CLAVE_MENSAJES, {});
@@ -352,6 +371,7 @@
         renderizarConversacion();
     }
 
+    // Vuelve a leer mensajes que otra pestaña haya guardado para este mismo origen.
     function actualizarMensajesExternos() {
         const resultado = leerJSON(CLAVE_MENSAJES, {});
         const almacenados = resultado && typeof resultado === "object" && !Array.isArray(resultado) ? resultado : {};
@@ -363,6 +383,7 @@
         renderizarConversacion();
     }
 
+    // Eventos de la pantalla: cambiar de chat, enviar texto y abrir el pin en el mapa.
     contenedorConversaciones.addEventListener("click", (evento) => {
         const enlace = evento.target.closest("a[data-pin-id]");
         if (!enlace) return;
@@ -412,6 +433,7 @@
         if (evento.key === CLAVE_MENSAJES) actualizarMensajesExternos();
     });
 
+    // Anuncia mensajes nuevos a tecnologías de asistencia y carga los pines iniciales.
     listaMensajes.setAttribute("role", "log");
     listaMensajes.setAttribute("aria-live", "polite");
     listaMensajes.setAttribute("aria-relevant", "additions");

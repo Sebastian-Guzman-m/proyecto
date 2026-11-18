@@ -1,12 +1,11 @@
+// Controla el mapa, los pines, las dos listas de planes y la ficha de detalle.
+// Todo se ejecuta dentro de esta función para no llenar el espacio global del navegador.
 (() => {
     "use strict";
     const estado = document.getElementById("estado-mapa");
     const informar = (texto) => { estado.textContent = texto; };
-    if (!window.L) {
-        informar("No se pudo cargar el mapa. Comprueba tu conexión y recarga la página.");
-        return;
-    }
 
+    // Nombres de los elementos HTML y clave donde se guarda la lista de pines.
     const clave = "nexo.pines.v1";
     const centro = [9.9281, -84.0907];
     const formulario = document.querySelector(".formulario-plan");
@@ -15,6 +14,9 @@
     const cuadriculaPlanes = document.getElementById("cuadricula-mis-planes");
     const contadorCercanos = document.getElementById("contador-planes-cercanos");
     const contadorMisPlanes = document.getElementById("contador-mis-planes");
+    const filtros = [document.getElementById("filtro-mapa"), document.getElementById("filtro-publicaciones")];
+    const campoCategoria = document.getElementById("categoria-plan");
+    const errorPlan = document.getElementById("error-plan");
     const detalleNombre = document.getElementById("detalle-nombre");
     const detalleCategoria = document.getElementById("detalle-categoria");
     const detalleCreador = document.getElementById("detalle-creador");
@@ -25,71 +27,91 @@
     const detalleTotalPersonas = document.getElementById("detalle-total-personas");
     const eliminarPinDetalle = document.getElementById("eliminar-pin-detalle");
     const botonChatDetalle = document.querySelector(".boton-chat-detalle");
-    const ejemplos = [
-        {
-            id: "demo-futbol", lat: 9.9351, lng: -84.1027, nombre: "Tarde de fútbol",
-            fecha: "Sáb, 7 nov", hora: "4:30 p. m.", descripcion: "Partido amistoso en la cancha 2.",
-            ubicacion: "La Sabana · cancha 2", categoria: "DEPORTE · LA SABANA", personas: 8
-        },
-        {
-            id: "demo-lectura", lat: 9.9319, lng: -84.0705, nombre: "Club de lectura",
-            fecha: "Mañana", hora: "6:00 p. m.", descripcion: "Encuentro para conversar sobre libros.",
-            ubicacion: "Café Miel · Escalante", categoria: "CULTURA · ESCALANTE", personas: 5
-        },
-        {
-            id: "demo-bici", lat: 9.9307, lng: -84.0662, nombre: "Paseo en bici",
-            fecha: "Sáb, 7 nov", hora: "8:00 a. m.", descripcion: "Recorrido en bici por el barrio.",
-            ubicacion: "Parque Francia · Escalante", categoria: "AIRE LIBRE · PARQUE FRANCIA", personas: 12
-        }
-    ];
+    // El formulario y los filtros comparten las mismas categorías.
+    const categorias = new Map();
+    for (const opcion of Array.from(campoCategoria.options).slice(1)) {
+        categorias.set(opcion.value, opcion.textContent);
+        for (const filtro of filtros) filtro.append(opcion.cloneNode(true));
+    }
+    const iconosCategoria = { deporte: "futbol", cultura: "lectura", "aire-libre": "ciclismo", otros: "generico" };
+
+    // Las publicaciones de ejemplo viven en el HTML y sirven como datos iniciales.
+    const ejemplos = Array.from(cuadriculaPlanes.querySelectorAll("article[data-pin-id]"), (articulo) => {
+        const { pinId, lat, lng, categoria, fecha, hora, personas } = articulo.dataset;
+        return {
+            id: pinId, lat: Number(lat), lng: Number(lng), categoria, fecha, hora,
+            personas: Number(personas),
+            nombre: articulo.querySelector("h2").textContent,
+            autor: articulo.querySelector(".autor-plan").textContent,
+            descripcion: articulo.querySelector(".descripcion-publicacion").textContent,
+            ubicacion: articulo.querySelector(".lugar-plan").textContent
+        };
+    });
+    // Estado temporal de creación y estado guardado de la pantalla.
     let punto = null;
     let seleccion = null;
     let pinSeleccionado = null;
     let pines = [];
+    let categoriaActiva = "";
+    // Comprueba el rango de latitud y longitud antes de mostrar un pin guardado.
     const coordenadasValidas = (p) => p && Number.isFinite(p.lat) && Number.isFinite(p.lng)
         && Math.abs(p.lat) <= 90 && Math.abs(p.lng) <= 180;
     try {
         const guardado = localStorage.getItem(clave);
-        if (guardado === null) {
-            pines = ejemplos;
-            localStorage.setItem(clave, JSON.stringify(pines));
-        }
-        const datos = guardado === null ? pines : JSON.parse(guardado);
+        const datos = guardado === null ? ejemplos : JSON.parse(guardado);
         if (!Array.isArray(datos)) throw new Error("Formato inválido");
         pines = datos.filter((p) => coordenadasValidas(p) && typeof p.id === "string"
             && typeof p.nombre === "string");
+        if (guardado === null) {
+            localStorage.setItem(clave, JSON.stringify(pines));
+        }
     } catch {
+        pines = ejemplos;
         informar("No se pudieron recuperar tus pines guardados. Puedes crear nuevos pines.");
     }
 
-    const limitesMundo = L.latLngBounds([-85.05112878, -180], [85.05112878, 180]);
-    const mapa = L.map("contenedor-mapa", {
-        maxBounds: limitesMundo,
-        maxBoundsViscosity: 1
-    }).setView(centro, 13);
+    // Las publicaciones siguen disponibles si no se puede descargar Leaflet.
+    const leaflet = window.L;
+    let mapa = null;
+    let marcadores;
+    let iconoPin;
+    let iconoSeleccion;
     const contenedor = document.getElementById("contenedor-mapa");
     const espacios = {
         "#pantalla-mapa": document.getElementById("espacio-mapa-principal"),
         "#crear-plan": document.getElementById("espacio-mapa-creacion"),
         "#detalle-plan": document.getElementById("espacio-mapa-detalle")
     };
-    const teselas = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    if (leaflet) {
+        const limitesMundo = leaflet.latLngBounds([-85.05112878, -180], [85.05112878, 180]);
+        mapa = leaflet.map(contenedor, {
+            maxBounds: limitesMundo,
+            maxBoundsViscosity: 1
+        }).setView(centro, 13);
+        const teselas = leaflet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             noWrap: true,
             bounds: limitesMundo,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mapa);
-    teselas.on("tileerror", () => informar("No se pudo cargar una parte del mapa. Comprueba tu conexión."));
-    const crearIcono = (nombre) => L.icon({
-        iconUrl: `imagenes/iconos/${nombre}.svg`,
-        iconSize: [32, 44],
-        iconAnchor: [16, 43],
-        popupAnchor: [0, -38]
-    });
-    const iconoPin = crearIcono("pin-mapa");
-    const iconoSeleccion = crearIcono("pin-seleccion");
-    const marcadores = L.layerGroup().addTo(mapa);
+        teselas.on("tileerror", () => informar("No se pudo cargar una parte del mapa. Comprueba tu conexión."));
+        const crearIcono = (nombre) => leaflet.icon({
+            iconUrl: `imagenes/iconos/${nombre}.svg`,
+            iconSize: [32, 44],
+            iconAnchor: [16, 43],
+            popupAnchor: [0, -38]
+        });
+        iconoPin = crearIcono("pin-mapa");
+        iconoSeleccion = crearIcono("pin-seleccion");
+        marcadores = leaflet.layerGroup().addTo(mapa);
+    } else {
+        const mensaje = "No se pudo cargar el mapa. Comprueba tu conexión y recarga la página.";
+        informar(mensaje);
+        ubicacion.textContent = mensaje;
+        formulario.querySelector('button[type="submit"]').disabled = true;
+    }
 
+    // Evita alejarse tanto que el mapa muestre espacio vacío fuera del mundo.
     function ajustarZoomMinimo() {
         const tamano = mapa.getSize();
         const ladoMayor = Math.max(tamano.x, tamano.y);
@@ -98,32 +120,43 @@
         mapa.setMinZoom(zoomMinimo);
     }
 
+    // Guarda los pines y avisa en la interfaz si el navegador no permite hacerlo.
     function guardar() {
         try {
             localStorage.setItem(clave, JSON.stringify(pines));
-            informar("Pines guardados en este navegador. Haz clic en el mapa para crear otro.");
+            if (mapa) informar("Pines guardados en este navegador. Haz clic en el mapa para crear otro.");
         } catch {
             informar("El navegador no permitió guardar. Los cambios se perderán al recargar.");
         }
     }
 
-    function tipoDePin(pin) {
-        const texto = `${pin.nombre || ""} ${pin.categoria || ""}`
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-        if (/futbol|deporte/.test(texto)) return "futbol";
-        if (/lectura|libro|cultura/.test(texto)) return "lectura";
-        if (/bici|ciclismo|aire libre/.test(texto)) return "ciclismo";
-        return "generico";
+    // Los pines guardados antes de tener un selector conservan una categoría útil.
+    function categoriaDelPin(pin) {
+        if (categorias.has(pin.categoria)) return pin.categoria;
+        const categoriaGuardada = typeof pin.categoria === "string" ? pin.categoria.trim() : "";
+        const texto = (categoriaGuardada || pin.nombre).normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        if (/futbol|deporte/.test(texto)) return "deporte";
+        if (/lectura|libro|cultura/.test(texto)) return "cultura";
+        if (/bici|ciclismo|aire libre/.test(texto)) return "aire-libre";
+        return "otros";
     }
 
-    function categoriaDetalle(pin) {
-        const tipo = tipoDePin(pin);
-        if (tipo === "futbol") return "Plan deportivo";
-        if (tipo === "lectura") return "Plan cultural";
-        if (tipo === "ciclismo") return "Plan al aire libre";
-        return "Plan de encuentro";
+    function autorDelPin(pin) {
+        return typeof pin.autor === "string" && pin.autor.trim() ? pin.autor : "Mateo Rojas";
     }
 
+    function pinesVisibles() {
+        return categoriaActiva ? pines.filter((pin) => categoriaDelPin(pin) === categoriaActiva) : pines;
+    }
+
+    function cambiarFiltro(categoria) {
+        categoriaActiva = categoria;
+        for (const filtro of filtros) filtro.value = categoria;
+        dibujar();
+    }
+
+    // Funciones pequeñas para mostrar datos aunque falte algún campo opcional.
     function lugarDelPin(pin) {
         const referencia = typeof pin.ubicacion === "string" ? pin.ubicacion.trim() : "";
         return referencia || `Punto en el mapa · ${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`;
@@ -144,13 +177,14 @@
         return `${cantidad} ${cantidad === 1 ? "persona" : "personas"}`;
     }
 
+    // Copia los datos del pin seleccionado a la ficha y crea avatares de muestra.
     function renderizarDetalle(pin) {
         botonChatDetalle.dataset.pinId = pin.id;
         detalleNombre.textContent = pin.nombre;
-        detalleCategoria.textContent = categoriaDetalle(pin);
+        detalleCategoria.textContent = categorias.get(categoriaDelPin(pin));
         detalleCreador.replaceChildren(
             document.createTextNode("Creado por "),
-            Object.assign(document.createElement("strong"), { textContent: "Mateo Rojas" }),
+            Object.assign(document.createElement("strong"), { textContent: autorDelPin(pin) }),
             document.createTextNode(" · anfitrión")
         );
         detalleFechaHora.textContent = fechaDelPin(pin);
@@ -172,13 +206,14 @@
         detalleAsistentes.append(total);
     }
 
+    // Abre la ficha, recuerda qué pin está activo y centra el mapa en ese punto.
     function abrirDetalle(id) {
         const pin = pines.find((elemento) => elemento.id === id);
         if (!pin) return;
         pinSeleccionado = pin.id;
         renderizarDetalle(pin);
         if (location.hash !== "#detalle-plan") location.hash = "#detalle-plan";
-        requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (mapa) requestAnimationFrame(() => requestAnimationFrame(() => {
             mapa.invalidateSize({ pan: false });
             mapa.setView([pin.lat, pin.lng], Math.max(mapa.getZoom(), 15));
         }));
@@ -186,6 +221,7 @@
 
     window.nexoAbrirDetallePin = abrirDetalle;
 
+    // Quita el pin del almacenamiento, actualiza las vistas y avisa al chat.
     function eliminarPin(id) {
         if (!pines.some((pin) => pin.id === id)) return;
         pines = pines.filter((pin) => pin.id !== id);
@@ -200,8 +236,9 @@
         if (pinSeleccionado) eliminarPin(pinSeleccionado);
     });
 
+    // Crea el icono de categoría que se usa en las tarjetas de las dos listas.
     function crearIconoLista(pin, tarjetaGrande = false) {
-        const tipo = tipoDePin(pin);
+        const tipo = iconosCategoria[categoriaDelPin(pin)];
         const elemento = document.createElement("span");
         elemento.className = tarjetaGrande
             ? `ilustracion-tarjeta ilustracion-${tipo}`
@@ -215,24 +252,25 @@
         return elemento;
     }
 
-    function renderizarListas() {
-        contadorCercanos.textContent = String(pines.length);
-        contadorMisPlanes.textContent = String(pines.length);
+    // Vuelve a crear Planes cerca y Mis planes desde la misma lista de pines.
+    function renderizarListas(visibles) {
+        contadorCercanos.textContent = String(visibles.length);
+        contadorMisPlanes.textContent = visibles.length === 1 ? "1 publicación" : `${visibles.length} publicaciones`;
         listaCercanos.replaceChildren();
         cuadriculaPlanes.replaceChildren();
 
-        if (pines.length === 0) {
+        if (visibles.length === 0) {
             const mensajeCercano = document.createElement("p");
             mensajeCercano.className = "estado-lista-planes";
-            mensajeCercano.textContent = "Aún no hay planes. Crea un pin en el mapa y aparecerá aquí.";
+            mensajeCercano.textContent = categoriaActiva ? "No hay planes en esta categoría."
+                : "Aún no hay planes. Crea un pin en el mapa y aparecerá aquí.";
             listaCercanos.append(mensajeCercano);
             const mensajePropio = mensajeCercano.cloneNode(true);
             cuadriculaPlanes.append(mensajePropio);
             return;
         }
 
-        for (const pin of pines) {
-            const tipo = tipoDePin(pin);
+        for (const pin of visibles) {
             const cercanos = document.createElement("a");
             cercanos.className = "tarjeta-plan";
             cercanos.href = "#detalle-plan";
@@ -266,17 +304,22 @@
 
             const subtitulo = document.createElement("span");
             subtitulo.className = "subtitulo-seccion";
-            const categoria = pin.categoria || (tipo === "futbol" ? "DEPORTE" : tipo === "lectura" ? "CULTURA" : tipo === "ciclismo" ? "AIRE LIBRE" : "PLAN");
-            subtitulo.textContent = pin.categoria || `${categoria} · ${lugarDelPin(pin).toLocaleUpperCase()}`;
+            subtitulo.textContent = categorias.get(categoriaDelPin(pin));
             tarjeta.append(subtitulo);
 
             const nombre = document.createElement("h2");
             nombre.textContent = pin.nombre;
             tarjeta.append(nombre);
 
+            const autor = document.createElement("p");
+            autor.className = "autor-plan";
+            autor.textContent = autorDelPin(pin);
+            const descripcion = document.createElement("p");
+            descripcion.className = "descripcion-publicacion";
+            descripcion.textContent = pin.descripcion || "Este plan todavía no tiene una descripción.";
             const ubicacionTarjeta = document.createElement("p");
             ubicacionTarjeta.textContent = lugarDelPin(pin);
-            tarjeta.append(ubicacionTarjeta);
+            tarjeta.append(autor, descripcion, ubicacionTarjeta);
 
             const datosTarjeta = document.createElement("div");
             datosTarjeta.className = "datos-mi-plan";
@@ -302,10 +345,13 @@
             flecha.append(iconoFlecha);
             pie.append(flecha);
             tarjeta.append(pie);
-            cuadriculaPlanes.append(tarjeta);
+            const publicacion = document.createElement("article");
+            publicacion.append(tarjeta);
+            cuadriculaPlanes.append(publicacion);
         }
     }
 
+    // Un clic en cualquier tarjeta abre el detalle del pin asociado.
     function enlazarLista(contenedor) {
         contenedor.addEventListener("click", (evento) => {
             const tarjeta = evento.target.closest("[data-pin-id]");
@@ -317,53 +363,68 @@
 
     enlazarLista(listaCercanos);
     enlazarLista(cuadriculaPlanes);
-
-    function dibujar() {
-        marcadores.clearLayers();
-        for (const pin of pines) {
-            const marcador = L.marker([pin.lat, pin.lng], {
-                icon: iconoPin, draggable: false, bubblingMouseEvents: false, title: pin.nombre
-            }).addTo(marcadores);
-            marcador.on("click", () => abrirDetalle(pin.id));
-        }
-        renderizarListas();
+    for (const filtro of filtros) {
+        filtro.addEventListener("change", () => cambiarFiltro(filtro.value));
     }
 
+    // Dibuja los marcadores fijos y reconstruye las tarjetas de planes.
+    function dibujar() {
+        const visibles = pinesVisibles();
+        if (mapa) {
+            marcadores.clearLayers();
+            for (const pin of visibles) {
+                const marcador = leaflet.marker([pin.lat, pin.lng], {
+                    icon: iconoPin, draggable: false, bubblingMouseEvents: false, title: pin.nombre
+                }).addTo(marcadores);
+                marcador.on("click", () => abrirDetalle(pin.id));
+            }
+        }
+        renderizarListas(visibles);
+    }
+
+    // Guarda el punto elegido y crea o mueve el marcador temporal arrastrable.
     function elegir(posicion) {
         punto = posicion.wrap();
         if (seleccion) seleccion.setLatLng(punto);
         else {
-            seleccion = L.marker(punto, { icon: iconoSeleccion, draggable: true, title: "Punto de encuentro" }).addTo(mapa);
+            seleccion = leaflet.marker(punto, { icon: iconoSeleccion, draggable: true, title: "Punto de encuentro" }).addTo(mapa);
             seleccion.on("dragend", () => elegir(seleccion.getLatLng()));
         }
         ubicacion.textContent = `Punto seleccionado: ${punto.lat.toFixed(5)}, ${punto.lng.toFixed(5)}`;
     }
-    mapa.on("click", (evento) => {
+    mapa?.on("click", (evento) => {
         if (location.hash === "#detalle-plan") return;
         elegir(evento.latlng);
         if (location.hash !== "#crear-plan") location.hash = "crear-plan";
     });
 
+    // Valida los campos, guarda el pin, limpia el formulario y vuelve al mapa.
     formulario.addEventListener("submit", (evento) => {
         evento.preventDefault();
+        errorPlan.textContent = "";
         if (!punto) {
-            ubicacion.textContent = "Primero haz clic en el mapa para elegir el punto de encuentro.";
+            errorPlan.textContent = "Primero elige el punto de encuentro en el mapa.";
             return;
         }
+        const autor = document.getElementById("autor-plan").value.trim();
         const nombre = document.getElementById("nombre-plan").value.trim();
-        if (!nombre) { document.getElementById("nombre-plan").focus(); return; }
+        const descripcion = document.getElementById("descripcion-plan").value.trim();
+        const categoria = campoCategoria.value;
+        if (!autor || !nombre || !descripcion || !categorias.has(categoria)) {
+            errorPlan.textContent = "Completa el usuario, el nombre, la descripción y la categoría.";
+            return;
+        }
         pines.push({
             id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-            lat: punto.lat, lng: punto.lng, nombre,
+            lat: punto.lat, lng: punto.lng, nombre, autor, categoria, descripcion,
             fecha: document.getElementById("fecha-plan").value.trim(),
             hora: document.getElementById("hora-plan").value.trim(),
-            descripcion: document.getElementById("descripcion-plan").value.trim(),
             ubicacion: document.getElementById("referencia-plan").value.trim(),
             personas: 1
         });
         const destino = punto;
         guardar();
-        dibujar();
+        cambiarFiltro("");
         window.dispatchEvent(new CustomEvent("nexo:pines-actualizados", { detail: { pines } }));
         formulario.reset();
         mapa.removeLayer(seleccion);
@@ -386,7 +447,7 @@
             renderizarDetalle(pines[0]);
         }
         const espacio = espacios[location.hash];
-        if (!espacio) return;
+        if (!espacio || !mapa) return;
         if (contenedor.parentElement !== espacio) espacio.appendChild(contenedor);
         if (seleccion) {
             if (location.hash === "#crear-plan") seleccion.addTo(mapa);
@@ -399,6 +460,7 @@
             ajustarZoomMinimo();
         });
     }
+    // Reacciona al cambio de pantalla y sincroniza cambios hechos en otra pestaña.
     window.addEventListener("hashchange", () => {
         if (location.hash !== "#detalle-plan") pinSeleccionado = null;
         actualizarVista();
@@ -422,7 +484,7 @@
             informar("No se pudieron sincronizar los pines guardados.");
         }
     });
-    if (window.ResizeObserver) {
+    if (mapa && window.ResizeObserver) {
         const observador = new ResizeObserver(() => {
             if (espacios[location.hash]) {
                 mapa.invalidateSize({ pan: false });

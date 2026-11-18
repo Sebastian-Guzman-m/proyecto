@@ -1,3 +1,7 @@
+// Ejemplo antiguo e independiente: index.html no carga este archivo.
+// Necesita que la página tenga un elemento con id="mapa" y Leaflet ya cargado.
+// Al hacer clic, pregunta el nombre del lugar y muestra un marcador que se puede mover.
+// No guarda los marcadores ni comparte estado con la aplicación actual.
 // Vista inicial: San José, Costa Rica.
 const mapa = L.map("mapa").setView([9.9281, -84.0907], 13);
 

@@ -1,10 +1,30 @@
-# proyecto
+# Nexo
 
+Nexo es una página para proponer planes y encontrar cosas que hacer cerca.
+Por ejemplo, puedes organizar un partido, una salida en bici o un club de lectura.
 
-## Mapa interactivo
+## Cómo abrir la página
 
-Abre index.html con conexión a Internet y entra a la pantalla Mapa (también puedes usar index.html#pantalla-mapa). Leaflet 1.9.4 muestra las teselas de OpenStreetMap. Para un sitio público con tráfico, revisa https://operations.osmfoundation.org/policies/tiles/.
+1. Extrae la carpeta del ZIP.
+2. Abre el archivo `index.html` en tu navegador.
+3. Pulsa **Iniciar sesión**. Puedes dejar los campos vacíos.
+4. Mantén Internet conectado para que cargue el mapa.
 
-Haz clic en el mapa o pulsa Crear pin, selecciona un punto, completa el formulario y pulsa Publicar pin. Puedes ajustar el punto antes de publicar; después, el pin queda fijo. Ábrelo para eliminarlo. Los pines se guardan en localStorage de este navegador y origen; no se comparten entre dispositivos ni usuarios. No requiere claves API.
+## Cómo publicar un plan
 
-El mapa usa una única instancia de Leaflet y un único contenedor. Al cambiar entre Mapa, Crear pin y Detalle, el contenedor se mueve al espacio de la pantalla activa y Leaflet recalcula su tamaño. La posición y el acercamiento se conservan al navegar; al publicar un pin se centra en su ubicación. Las listas «Planes cerca» y «Mis planes» se generan desde esos mismos pines; sus tarjetas y los marcadores abren la ficha oscura del plan, y publicar o eliminar un pin actualiza las dos listas.
+1. Pulsa **Crear pin** y elige un punto en el mapa.
+2. Escribe tu nombre y ponle un título al plan.
+3. Cuenta qué van a hacer y elige una categoría, como **Deporte**.
+4. Si ya sabes la fecha, la hora o el lugar exacto, puedes escribirlos.
+5. Pulsa **Publicar pin**. Tu plan aparecerá como una marca en el mapa.
+
+## Qué más puedes hacer
+
+- En **Publicaciones**, puedes ver todos los planes o filtrar por categoría.
+- Si abres un plan, puedes ver quién lo publicó y dónde será.
+- Pulsa **Unirme al chat** para escribir un mensaje sobre ese plan.
+- Para quitar un plan de la página, abre su ficha y pulsa **Eliminar pin**.
+
+## Dónde se guardan tus planes
+
+Los planes y mensajes quedan en ese navegador. El inicio de sesión es solo de prueba.

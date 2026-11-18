@@ -1,559 +1,678 @@
 <!doctype html>
 <html lang="es">
-<head>
+    <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#080d17">
         <title>Nexo — planes cerca de ti</title>
+        <!-- Leaflet aporta los estilos del mapa; styles.css define el resto de la interfaz. -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
         <link rel="stylesheet" href="css/styles.css">
-</head>
+    </head>
 <body>
-    <section id="pantalla-inicio-sesion" class="pantalla-autenticacion inicio-sesion pantalla" aria-labelledby="titulo-inicio-sesion">
-        <p>¿Primera vez?</p>
-        <a class="enlace-superior-autenticacion" href="#pantalla-registro">Crear cuenta</a>
-        <h1 id="titulo-inicio-sesion">Qué bueno verte</h1>
-        <h4>Inicia sesión para volver al mapa y encontrar tu próximo plan.</h4>
-        <form class="formulario-autenticacion" action="#pantalla-mapa">
-        <label for="correo-inicio-sesion">Correo electrónico</label>
-        <input type="email" id="correo-inicio-sesion" name="correo-electronico" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+    <main>
+        <!-- Pantalla de muestra, los enlaces cambian el fragmento de la dirección. -->
+        <section id="pantalla-inicio-sesion" class="pantalla-autenticacion inicio-sesion pantalla" aria-labelledby="titulo-inicio-sesion">
+            <p>¿Primera vez?</p>
+            <!-- Este enlace abre la sección de registro dentro de este mismo HTML. -->
+            <a class="enlace-superior-autenticacion" href="#pantalla-registro">Crear cuenta</a>
+            <h1 id="titulo-inicio-sesion">Qué bueno verte</h1>
+            <h4>Inicia sesión para volver al mapa y encontrar tu próximo plan.</h4>
+            <!-- Los campos de muestra no se envían al entrar al mapa. -->
+            <form class="formulario-autenticacion" action="#pantalla-mapa">
+                <label for="correo-inicio-sesion">Correo electrónico</label>
+                <input type="email" id="correo-inicio-sesion" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+                <label for="contrasena-inicio-sesion">Contraseña</label>
+                <input type="password" id="contrasena-inicio-sesion" placeholder="Tu contraseña" autocomplete="current-password">
+                <div class="opciones-autenticacion">
+                    <div class="fila-casilla">
+                        <input type="checkbox" id="recordarme">
+                        <label for="recordarme">Recordarme</label>
+                    </div>
+                    <!-- Vuelve a esta pantalla; todavía no hay recuperación de contraseña. -->
+                    <a href="#pantalla-inicio-sesion">¿Olvidaste tu contraseña?</a>
+                </div>
+                <button class="boton-autenticacion" type="submit">Iniciar sesión <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
+            </form>
+            <div class="separador-autenticacion">o continúa con</div>
+            <!-- Los enlaces abren la demostración del mapa. -->
+            <a class="boton-google" href="#pantalla-mapa"><img class="logo-google" src="imagenes/google.svg" alt=""> Google (demo)</a>
+            <div class="vista-previa-autenticacion" aria-hidden="true">
+                <span>TARDE DE FÚTBOL</span><span>Sáb, 7 nov · 4:30 p. m.</span>
+                <div class="personas-vista-previa">
+                    <img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><span>8 personas se unieron</span>
+                </div>
+            </div>
+        </section>
 
-        <label for="contrasena-inicio-sesion">Contraseña</label>
-        <input type="password" id="contrasena-inicio-sesion" name="contrasena" placeholder="Tu contraseña" autocomplete="current-password">
+        <!-- Registro visual de muestra. El formulario no crea usuarios ni guarda los datos. -->
+        <section id="pantalla-registro" class="pantalla-autenticacion registro pantalla" aria-labelledby="titulo-registro">
+            <p>¿Ya tienes cuenta?</p>
+            <!-- Vuelve a la pantalla de acceso. -->
+            <a class="enlace-superior-autenticacion" href="#pantalla-inicio-sesion">Iniciar sesión</a>
+            <h1 id="titulo-registro">Crea tu cuenta</h1>
+            <h4>Conecta con gente y encuentra planes que pasan cerca de ti.</h4>
+            <!-- action lleva al mapa como muestra; este formulario no crea una cuenta. -->
+            <form class="formulario-autenticacion" action="#pantalla-mapa">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" placeholder="Tu nombre" autocomplete="name">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+                <label for="contrasena-nueva">Crea una contraseña</label>
+                <input type="password" id="contrasena-nueva" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+                <label for="confirmar-contrasena">Repite tu contraseña</label>
+                <input type="password" id="confirmar-contrasena" placeholder="Escribe tu contraseña otra vez" autocomplete="new-password">
+                <div class="fila-casilla casilla-terminos">
+                    <input type="checkbox" id="terminos">
+                    <label for="terminos">Acepto los <a href="#nota-terminos">términos de servicio</a> y la <a href="#nota-privacidad">política de privacidad</a>.</label>
+                </div>
+                <button class="boton-autenticacion" type="submit">Crear cuenta <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
+            </form>
+            <div class="separador-autenticacion">o regístrate con</div>
+            <!-- Son enlaces de demostración; los textos legales enlazan a notas ocultas temporales. -->
+            <a class="boton-google" href="#pantalla-mapa"><img class="logo-google" src="imagenes/google.svg" alt=""> Google (demo)</a>
+            <h6>Al continuar, aceptas nuestros <a href="#nota-terminos">términos</a> y <a href="#nota-privacidad">política de privacidad</a>.</h6>
+            <div class="vista-previa-autenticacion" aria-hidden="true">
+                <span>TARDE DE FÚTBOL</span><span>Sáb, 7 nov · 4:30 p. m.</span>
+                <div class="personas-vista-previa">
+                    <img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><span>8 personas se unieron</span>
+                </div>
+            </div>
+        </section>
 
-        <div class="opciones-autenticacion">
-        <div class="fila-casilla">
-        <input type="checkbox" name="recordarme" id="recordarme">
+        <!-- Vista principal: navegación, lista dinámica de planes y contenedor único del mapa Leaflet. -->
+        <section id="pantalla-mapa" class="vista-aplicacion pantalla" aria-label="Mapa social">
+            <header class="barra-superior">
+                <!-- El logotipo vuelve al mapa; Crear pin y el avatar abren otras secciones por su id. -->
+                <a class="marca" href="#pantalla-mapa" aria-label="Nexo, mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <div class="acciones-superiores">
+                    <a class="boton boton-principal boton-pequeno" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear pin</a>
+                    <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
+                </div>
+            </header>
+            <p id="estado-mapa" class="estado-mapa" role="status">Haz clic en el mapa para crear un pin. Tus pines se guardan en este navegador.</p>
+            <div class="distribucion-aplicacion">
+                <nav class="barra-lateral" aria-label="Navegación principal">
+                    <!-- Cada enlace abre una sección de Nexo. -->
+                    <a class="elemento-navegacion activo" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa-amarillo.svg" alt=""></span>Mapa</a>
+                    <a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Publicaciones</a>
+                    <a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes<span class="contador-navegacion">3</span></a>
+                    <a class="elemento-navegacion" href="#acerca-de"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/nexo.svg" alt=""></span>Acerca de</a>
+                    <a class="perfil-lateral enlace-perfil-lateral" href="#pantalla-perfil"><img class="avatar-usuario" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil</small></span><span class="indicador-perfil"><img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></span></a>
+                </nav>
+                <aside class="panel-planes-cercanos">
+                    <div class="encabezado-panel">
+                        <div><span class="subtitulo-seccion">A TU ALREDEDOR</span>
+                            <h1>Planes cerca</h1>
+                        </div>
+                        <span id="contador-planes-cercanos" class="contador-resultados">0</span>
+                    </div>
+                    <p class="texto-secundario descripcion-panel">Nexo te conecta con gente y planes cerca de ti.</p>
+                    <div class="filtro-categorias">
+                        <label for="filtro-mapa">Categoría</label>
+                        <select id="filtro-mapa"><option value="">Todas</option></select>
+                    </div>
+                    <div id="lista-planes-cercanos" class="lista-planes-cercanos" aria-live="polite"></div>
+                    <a class="enlace-todos-planes" href="#mis-planes">Ver publicaciones <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
+                </aside>
+                <div class="area-mapa espacio-mapa" id="espacio-mapa-principal">
+                    <div class="mapa-interactivo" id="contenedor-mapa" aria-label="Mapa de planes"></div>
+                </div>
+            </div>
+        </section>
 
-        <label for="recordarme">Recordarme</label>
-        </div>
-        <a href="#pantalla-inicio-sesion">¿Olvidaste tu contraseña?</a>
-        </div>
-        <button class="boton-autenticacion" type="submit">Iniciar sesión <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
-        </form>
-        <div class="separador-autenticacion">o continúa con</div>
-        <a class="boton-google" href="#pantalla-mapa"><img class="logo-google" src="imagenes/google.svg" alt=""> Google</a>
-        <h6>Al continuar, aceptas nuestros <a href="#nota-terminos">términos</a> y <a href="#nota-privacidad">política de privacidad</a>.</h6>
-        <div class="vista-previa-autenticacion" aria-hidden="true">
-        <span>TARDE DE FÚTBOL</span><span>Sáb, 7 nov · 4:30 p. m.</span>
-        <div class="personas-vista-previa">
-        <img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><span>8 personas se unieron</span>
-        </div>
-        </div>
-    </section>
+        <!-- Vista de creación. mapa.js mueve aquí el contenedor #contenedor-mapa al elegir un punto. -->
+        <section id="crear-plan" class="vista-aplicacion pantalla" aria-label="Crear un plan">
+            <header class="barra-superior">
+                <!-- El logotipo y Cancelar regresan al mapa; el avatar abre el perfil de muestra. -->
+                <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <div class="acciones-superiores">
+                    <a class="boton boton-secundario boton-pequeno" href="#pantalla-mapa">Cancelar</a>
+                    <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
+                </div>
+            </header>
+            <div class="distribucion-aplicacion distribucion-creacion">
+                <aside class="barra-lateral" aria-label="Navegación principal">
+                    <!-- Estos enlaces cambian a las secciones Mapa, Publicaciones y Mensajes. -->
+                    <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a>
+                    <a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Publicaciones</a>
+                    <a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes</a>
+                </aside>
+                <div class="mapa-creacion area-mapa espacio-mapa" id="espacio-mapa-creacion"></div>
+                <div class="panel-formulario-creacion">
+                    <div class="etiqueta-paso">CREAR PIN</div>
+                    <h1>Elige el punto de encuentro</h1>
+                    <div class="direccion-seleccionada"><strong id="ubicacion-pin">Haz clic en el mapa para elegir un punto</strong></div>
+                    <!-- mapa.js intercepta el envío, guarda el pin y luego cambia a #pantalla-mapa. -->
+                    <form class="formulario-plan" action="#pantalla-mapa">
+                        <h2>Crea un encuentro</h2>
+                        <p class="texto-secundario">Cuéntale a la gente qué van a hacer y cuándo.</p>
+                        <label for="autor-plan">Nombre del usuario</label>
+                        <input id="autor-plan" required maxlength="80" type="text" placeholder="Ej. Mateo Rojas">
+                        <label for="nombre-plan">¿Qué plan tienes en mente?</label>
+                        <input id="nombre-plan" required maxlength="120" type="text" placeholder="Ej. Tarde de fútbol">
+                        <label for="categoria-plan">Categoría</label>
+                        <select id="categoria-plan" required>
+                            <option value="">Elige una categoría</option>
+                            <option value="deporte">Deporte</option>
+                            <option value="cultura">Cultura</option>
+                            <option value="aire-libre">Aire libre</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                        <label for="referencia-plan">Lugar o referencia (opcional)</label>
+                        <input id="referencia-plan" maxlength="120" type="text" placeholder="Ej. Cancha 2, Parque La Sabana">
+                        <div class="fila-formulario">
+                            <div>
+                                <label for="fecha-plan">Fecha</label>
+                                <input id="fecha-plan" type="text" placeholder="Ej. Sábado 7 de noviembre">
+                            </div>
+                            <div>
+                                <label for="hora-plan">Hora</label>
+                                <input id="hora-plan" type="text" placeholder="Ej. 4:30 p. m.">
+                            </div>
+                        </div>
+                        <label for="descripcion-plan">Descripción</label>
+                        <textarea id="descripcion-plan" required maxlength="1000" rows="4" placeholder="Agrega algunos detalles"></textarea>
+                        <p id="error-plan" class="error-plan" role="status"></p>
+                        <fieldset>
+                            <legend>Visibilidad</legend>
+                            <label class="opcion-visibilidad">
+                                <input type="radio" name="visibilidad" checked>
+                                <span class="icono-opcion"><img class="icono" src="imagenes/iconos/circulo-punto-amarillo.svg" alt=""></span><span><strong>Solo en este navegador</strong><small>Este pin todavía no se comparte con otros usuarios</small></span>
+                            </label>
+                        </fieldset>
+                        <div class="fila-publicacion">
+                            <p>El pin se guarda en este navegador. Su ubicación queda fija al publicarlo; puedes eliminarlo desde el mapa.</p>
+                            <button class="boton boton-principal" type="submit">Publicar pin <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
 
-    <section id="pantalla-registro" class="pantalla-autenticacion registro pantalla" aria-labelledby="titulo-registro">
-        <p>¿Ya tienes cuenta?</p>
-        <a class="enlace-superior-autenticacion" href="#pantalla-inicio-sesion">Iniciar sesión</a>
-        <h1 id="titulo-registro">Crea tu cuenta</h1>
-        <h4>Conecta con gente y encuentra planes que pasan cerca de ti.</h4>
-        <form class="formulario-autenticacion" action="#pantalla-mapa">
-        <label for="nombre">Nombre completo</label>
-        <input type="text" name="nombre" id="nombre" placeholder="Tu nombre" autocomplete="name">
+        <!-- Ficha dinámica de un pin. mapa.js llena los campos con el pin seleccionado. -->
+        <section id="detalle-plan" class="vista-aplicacion pantalla" aria-label="Detalle del plan">
+            <header class="barra-superior">
+                <!-- El logotipo vuelve al mapa; el avatar abre el perfil de muestra. -->
+                <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <div class="acciones-superiores">
+                    <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
+                </div>
+            </header>
+            <div class="area-detalle">
+                <div class="mapa-detalle area-mapa espacio-mapa" id="espacio-mapa-detalle">
+                    <!-- Vuelve a la vista principal del mapa. -->
+                    <a class="volver-mapa" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda.svg" alt=""> Volver al mapa</a>
+                </div>
+                <aside class="tarjeta-detalle">
+                    <div class="cabecera-tarjeta-detalle"><span id="detalle-categoria" class="categoria-detalle">Plan deportivo</span>
+                        <div class="acciones-cabecera-detalle">
+                            <button id="eliminar-pin-detalle" class="eliminar-pin-detalle" type="button">Eliminar pin</button>
+                            <!-- Cierra la ficha y regresa al mapa. -->
+                            <a href="#pantalla-mapa" class="enlace-cerrar" aria-label="Cerrar detalle"><img class="icono" src="imagenes/iconos/cerrar.svg" alt=""></a>
+                        </div>
+                    </div>
+                    <h1 id="detalle-nombre">Tarde de fútbol</h1>
+                    <p id="detalle-creador" class="anfitrion-detalle">Creado por <strong>Mateo Rojas</strong> · anfitrión</p>
+                    <div class="datos-detalle">
+                        <div><span class="icono-dato"><img class="icono" src="imagenes/iconos/reloj-cian.svg" alt=""></span><span><strong>Fecha y hora</strong><small id="detalle-fecha-hora">Sábado, 7 de noviembre · 4:30 p. m.</small></span></div>
+                        <div><span class="icono-dato"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span><strong>Punto de encuentro</strong><small id="detalle-lugar">Cancha 2 · Parque La Sabana</small></span></div>
+                    </div>
+                    <div class="descripcion-detalle">
+                        <h2>Sobre este plan</h2>
+                        <p id="detalle-descripcion">Partido amistoso para pasar la tarde y conocer gente nueva. No hace falta traer equipo: armamos los grupos al llegar.</p>
+                    </div>
+                    <div class="encabezado-asistentes">
+                        <h2>Personas que se unen</h2>
+                        <span id="detalle-total-personas" class="total-personas">8 personas</span>
+                    </div>
+                    <div id="detalle-asistentes" class="grupo-avatares" aria-live="polite"></div>
+                    <div class="acciones-detalle">
+                        <!-- chat.js abre la conversación de este pin; no registra una unión real. -->
+                        <a class="boton boton-principal boton-chat-detalle" href="#pantalla-chat">Unirme al chat <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></a>
+                        <a class="boton boton-secundario enlace-publicaciones-detalle" href="#mis-planes">Ver publicaciones</a>
+                    </div>
+                </aside>
+            </div>
+        </section>
 
-        <label for="correo">Correo electrónico</label>
-        <input type="email" name="correo" id="correo" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+        <!-- Vista de chats. La lista, el encabezado y los mensajes se actualizan desde chat.js. -->
+        <section id="pantalla-chat" class="vista-aplicacion pantalla" aria-label="Chat del plan">
+            <header class="barra-superior">
+                <!-- La marca lleva al mapa y el avatar al perfil de muestra. -->
+                <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <div class="acciones-superiores">
+                    <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
+                </div>
+            </header>
+            <div class="distribucion-chat">
+                <aside class="barra-lateral navegacion-chat" aria-label="Navegación principal">
+                    <!-- Cambia entre Mapa, Publicaciones y esta pantalla de Mensajes. -->
+                    <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a>
+                    <a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Publicaciones</a>
+                    <a class="elemento-navegacion activo" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje-amarillo.svg" alt=""></span>Mensajes<span class="contador-navegacion">3</span></a>
+                </aside>
+                <aside class="lista-chats">
+                    <div class="encabezado-panel">
+                        <div><span class="subtitulo-seccion">CHATS RECIENTES</span>
+                            <h1>Conversaciones</h1>
+                        </div>
+                        <span class="contador-resultados">0</span>
+                    </div>
+                    <!-- chat.js crea aquí enlaces a cada conversación. Todos conservan la pantalla #pantalla-chat. -->
+                    <div class="lista-conversaciones" aria-live="polite"></div>
+                </aside>
+                <section class="conversacion" aria-label="Mensajes de Tarde de fútbol">
+                    <header class="encabezado-conversacion">
+                        <div class="icono-chat futbol"><img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></div>
+                        <div><strong>Tarde de fútbol</strong><small>8 personas · La Sabana · Sáb, 7 nov</small></div>
+                        <!-- chat.js intercepta este enlace y abre el detalle del pin activo. -->
+                        <a class="enlace-detalles-chat" href="#detalle-plan">Ver detalles del plan</a>
+                    </header>
+                    <!-- Estos mensajes de ejemplo se leen al iniciar el chat demo-futbol. -->
+                    <div class="lista-mensajes">
+                        <div class="separador-fecha">SÁBADO, 7 DE NOVIEMBRE</div>
+                        <p class="mensaje-sistema">Mateo creó este plan y comenzó el grupo.</p>
+                        <article class="mensaje"><img class="avatar-persona" src="imagenes/avatar.svg" alt="">
+                            <div><small class="autor-mensaje">Mateo · creador</small>
+                                <p>¡Qué bueno que se apuntaron! Nos vemos junto a la cancha 2.</p>
+                                <time>4:42 p. m.</time>
+                            </div>
+                        </article>
+                        <article class="mensaje"><img class="avatar-persona" src="imagenes/avatar.svg" alt="">
+                            <div><small class="autor-mensaje">Sofía</small>
+                                <p>¿Hay que llevar balón o ya tienen?</p>
+                                <time>4:45 p. m.</time>
+                            </div>
+                        </article>
+                        <article class="mensaje enviado">
+                            <div>
+                                <p>Yo llevo uno, por si acaso <img class="icono" src="imagenes/iconos/futbol.svg" alt="balón"></p>
+                                <time>4:46 p. m. · leído por 5</time>
+                            </div>
+                        </article>
+                        <article class="mensaje"><img class="avatar-persona" src="imagenes/avatar.svg" alt="">
+                            <div><small class="autor-mensaje">Ana</small>
+                                <p>¡Perfecto! ¿A qué hora nos encontramos?</p>
+                                <time>4:49 p. m.</time>
+                            </div>
+                        </article>
+                    </div>
+                    <!-- chat.js intercepta el envío, guarda el mensaje y mantiene abierto el chat. -->
+                    <form class="formulario-mensaje" action="#pantalla-chat">
+                        <label class="oculto-visualmente" for="campo-mensaje">Escribe un mensaje para el grupo</label>
+                        <input id="campo-mensaje" type="text" placeholder="Escribe un mensaje para el grupo…">
+                        <button type="submit" aria-label="Enviar mensaje"><img class="icono" src="imagenes/iconos/flecha-arriba-oscuro.svg" alt=""></button>
+                    </form>
+                </section>
 
-        <label for="contrasena-nueva">Crea una contraseña</label>
-        <input type="password" name="contrasena-nueva" id="contrasena-nueva" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+                <aside class="detalles-chat"><span class="subtitulo-seccion">DETALLES DEL PLAN</span>
+                    <h2>Tarde de fútbol</h2>
+                    <p class="texto-secundario">Sáb, 7 nov · 4:30 p. m.</p>
+                    <p class="texto-secundario">Cancha 2 · Parque La Sabana<br>San José, Costa Rica</p>
+                    <div class="encabezado-participantes"><strong>Participantes</strong><span>8</span></div>
+                    <div class="participante"><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Mateo Rojas · creador</strong><span class="estrella-anfitrion"><img class="icono" src="imagenes/iconos/estrella-amarillo.svg" alt=""></span></div>
+                    <div class="participante"><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Sofía Vargas</strong></div>
+                    <div class="participante"><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Ana Méndez</strong></div>
+                    <div class="participante"><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Julián Castro</strong></div>
+                    <div class="participante"><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Lucía Mora</strong></div>
+                    <p class="participantes-adicionales">+ 3 personas más</p>
+                    <div class="nota-chat">
+                        <p>Este chat es solo para quienes se unieron al pin.</p>
+                        <p>Coordinen aquí los últimos detalles del encuentro.</p>
+                    </div>
+                    <!-- Abre el detalle del pin activo; chat.js coloca el id del pin seleccionado. -->
+                    <a class="enlace-mapa" href="#detalle-plan"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""> Ver ubicación en el mapa</a>
+                </aside>
+            </div>
+        </section>
 
-        <label for="confirmar-contrasena">Repite tu contraseña</label>
-        <input type="password" name="confirmar-contrasena" id="confirmar-contrasena" placeholder="Escribe tu contraseña otra vez" autocomplete="new-password">
+        <!-- Publicaciones locales con sus tres ejemplos iniciales. -->
+        <section id="mis-planes" class="vista-aplicacion pantalla" aria-labelledby="titulo-publicaciones">
+            <header class="barra-superior">
+                <!-- El logotipo regresa al mapa; Crear pin y el avatar abren otras secciones. -->
+                <a class="marca" href="#pantalla-mapa" aria-label="Nexo, mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <div class="acciones-superiores">
+                    <a class="boton boton-principal boton-pequeno" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear pin</a>
+                    <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
+                </div>
+            </header>
+            <div class="distribucion-aplicacion distribucion-planes">
+                <aside class="barra-lateral" aria-label="Navegación principal">
+                    <!-- Enlaces de navegación a las vistas principales y al perfil. -->
+                    <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a>
+                    <a class="elemento-navegacion activo" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj-amarillo.svg" alt=""></span>Publicaciones</a>
+                    <a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes<span class="contador-navegacion">3</span></a>
+                    <a class="perfil-lateral enlace-perfil-lateral" href="#pantalla-perfil"><img class="avatar-usuario" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil</small></span></a>
+                </aside>
+                <div class="contenido-planes">
+                    <div class="titulo-planes">
+                        <div><span class="subtitulo-seccion">TU COMUNIDAD</span>
+                            <h1 id="titulo-publicaciones">Publicaciones</h1>
+                            <p class="texto-secundario">Explora los encuentros de la comunidad.</p>
+                        </div>
+                        <a class="boton boton-principal" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear un plan</a>
+                    </div>
+                    <div class="filtro-categorias filtro-publicaciones">
+                        <label for="filtro-publicaciones">Categoría</label>
+                        <select id="filtro-publicaciones"><option value="">Todas</option></select>
+                        <span id="contador-mis-planes" aria-live="polite">3 publicaciones</span>
+                    </div>
+                    <!-- mapa.js lee estos artículos la primera vez y actualiza la cuadrícula con los pines guardados. -->
+                    <div id="cuadricula-mis-planes" class="cuadricula-mis-planes" aria-live="polite">
+                        <article class="tarjeta-mi-plan" data-pin-id="demo-futbol" data-lat="9.9351" data-lng="-84.1027" data-categoria="deporte" data-fecha="Sáb, 7 nov" data-hora="4:30 p. m." data-personas="8">
+                            <span class="subtitulo-seccion">Deporte</span>
+                            <h2>Tarde de fútbol</h2>
+                            <p class="autor-plan">Mateo Rojas</p>
+                            <p class="descripcion-publicacion">Partido amistoso en la cancha 2.</p>
+                            <p class="lugar-plan">La Sabana · cancha 2</p>
+                        </article>
+                        <article class="tarjeta-mi-plan" data-pin-id="demo-lectura" data-lat="9.9319" data-lng="-84.0705" data-categoria="cultura" data-fecha="Mañana" data-hora="6:00 p. m." data-personas="5">
+                            <span class="subtitulo-seccion">Cultura</span>
+                            <h2>Club de lectura</h2>
+                            <p class="autor-plan">Sofía Mora</p>
+                            <p class="descripcion-publicacion">Encuentro para conversar sobre libros.</p>
+                            <p class="lugar-plan">Café Miel · Escalante</p>
+                        </article>
+                        <article class="tarjeta-mi-plan" data-pin-id="demo-bici" data-lat="9.9307" data-lng="-84.0662" data-categoria="aire-libre" data-fecha="Sáb, 7 nov" data-hora="8:00 a. m." data-personas="12">
+                            <span class="subtitulo-seccion">Aire libre</span>
+                            <h2>Paseo en bici</h2>
+                            <p class="autor-plan">Julián Castro</p>
+                            <p class="descripcion-publicacion">Recorrido en bici por el barrio.</p>
+                            <p class="lugar-plan">Parque Francia · Escalante</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <div class="fila-casilla casilla-terminos">
-        <input type="checkbox" name="terminos" id="terminos">
+        <!-- Las cuatro pantallas siguientes son contenido de muestra; sus campos no se guardan. -->
+        <section id="ajustes-cuenta" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-ajustes-cuenta">
+            <header class="barra-superior-ajustes">
+                <!-- La marca y este enlace vuelven al mapa. -->
+                <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <span class="ruta-ajustes">CONFIGURACIÓN / CUENTA</span>
+                <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
+            </header>
+            <div class="distribucion-ajustes">
+                <aside class="barra-lateral-ajustes">
+                    <p class="subtitulo-ajustes">AJUSTES</p>
+                    <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
+                    <!-- Estos enlaces abren cada sección de ajustes o el perfil. Cerrar sesión solo vuelve a la pantalla de muestra. -->
+                    <nav class="navegacion-ajustes" aria-label="Configuración">
+                        <a href="#ajustes-cuenta" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">01</span>Cuenta</a>
+                        <a href="#ajustes-privacidad"><span aria-hidden="true">02</span>Privacidad</a>
+                        <a href="#ajustes-notificaciones"><span aria-hidden="true">03</span>Notificaciones</a>
+                        <a href="#pantalla-perfil"><span aria-hidden="true">04</span>Mi perfil</a>
+                    </nav>
+                    <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
+                </aside>
+                <div class="contenido-ajustes">
+                    <div class="encabezado-ajustes">
+                        <div>
+                            <p class="subtitulo-ajustes">TU CUENTA</p>
+                            <h1 id="titulo-ajustes-cuenta">Cuenta</h1>
+                            <p>Administra tus datos y la seguridad de tu cuenta.</p>
+                        </div>
+                    </div>
+                    <div class="tarjeta-ajustes">
+                        <h2>Datos personales</h2>
+                        <dl class="lista-cuenta">
+                            <div>
+                                <dt>Nombre de usuario</dt>
+                                <dd>Mateo Rojas</dd>
+                            </div>
+                            <div>
+                                <dt>Correo electrónico</dt>
+                                <dd>m•••••@correo.com</dd>
+                            </div>
+                            <div>
+                                <dt>Teléfono</dt>
+                                <dd>No agregado</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div class="tarjeta-ajustes">
+                        <h2>Contraseña y seguridad</h2>
+                        <dl class="lista-cuenta">
+                            <div>
+                                <dt>Contraseña</dt>
+                                <dd>••••••••••••</dd>
+                            </div>
+                            <div>
+                                <dt>Verificación en dos pasos</dt>
+                                <dd>No configurada</dd>
+                            </div>
+                            <div>
+                                <dt>Sesiones activas</dt>
+                                <dd>Dispositivo actual</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <p class="nota-ajustes">Los datos mostrados son de ejemplo. La edición de cuenta estará disponible próximamente.</p>
+                </div>
+            </div>
+        </section>
 
-        <label for="terminos">Acepto los <a href="#nota-terminos">términos de servicio</a> y la <a href="#nota-privacidad">política de privacidad</a>.</label>
-        </div>
-        <button class="boton-autenticacion" type="submit">Crear cuenta <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
-        </form>
-        <div class="separador-autenticacion">o regístrate con</div>
-        <a class="boton-google" href="#pantalla-mapa"><img class="logo-google" src="imagenes/google.svg" alt=""> Google</a>
-        <h6>Al continuar, aceptas nuestros <a href="#nota-terminos">términos</a> y <a href="#nota-privacidad">política de privacidad</a>.</h6>
-        <div class="vista-previa-autenticacion" aria-hidden="true">
-        <span>TARDE DE FÚTBOL</span><span>Sáb, 7 nov · 4:30 p. m.</span>
-        <div class="personas-vista-previa">
-        <img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><img src="imagenes/avatar.svg" alt=""><span>8 personas se unieron</span>
-        </div>
-        </div>
-    </section>
+        <section id="ajustes-privacidad" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-ajustes-privacidad">
+            <header class="barra-superior-ajustes">
+                <!-- La marca y este enlace vuelven al mapa. -->
+                <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <span class="ruta-ajustes">CONFIGURACIÓN / PRIVACIDAD</span>
+                <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
+            </header>
+            <div class="distribucion-ajustes">
+                <aside class="barra-lateral-ajustes">
+                    <p class="subtitulo-ajustes">AJUSTES</p>
+                    <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
+                    <!-- Navegación entre Cuenta, Privacidad, Notificaciones y Perfil; cerrar sesión solo cambia de vista. -->
+                    <nav class="navegacion-ajustes" aria-label="Configuración">
+                        <a href="#ajustes-cuenta"><span aria-hidden="true">01</span>Cuenta</a>
+                        <a href="#ajustes-privacidad" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">02</span>Privacidad</a>
+                        <a href="#ajustes-notificaciones"><span aria-hidden="true">03</span>Notificaciones</a>
+                        <a href="#pantalla-perfil"><span aria-hidden="true">04</span>Mi perfil</a>
+                    </nav>
+                    <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
+                </aside>
+                <div class="contenido-ajustes">
+                    <div class="encabezado-ajustes">
+                        <div>
+                            <p class="subtitulo-ajustes">TU SEGURIDAD</p>
+                            <h1 id="titulo-ajustes-privacidad">Privacidad</h1>
+                            <p>Controla quién puede ver tu información y contactarte.</p>
+                        </div>
+                    </div>
+                    <div class="tarjeta-ajustes">
+                        <h2>Visibilidad y contacto</h2>
+                        <p class="nota-ajustes">Vista previa: estos cambios aún no se guardan.</p>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="visibilidad-perfil">Visibilidad del perfil</label>
+                                <p>Elige quién puede consultar tu perfil.</p>
+                            </div>
+                            <select id="visibilidad-perfil">
+                                <option>Todos</option>
+                                <option>Participantes</option>
+                                <option>Solo yo</option>
+                            </select>
+                        </div>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="mensajes-directos">Mensajes directos</label>
+                                <p>Controla quién puede enviarte mensajes.</p>
+                            </div>
+                            <select id="mensajes-directos">
+                                <option>Participantes</option>
+                                <option>Todos</option>
+                                <option>Nadie</option>
+                            </select>
+                        </div>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="visibilidad-ubicacion">Ubicación</label>
+                                <p>Decide cómo se muestra tu ubicación en el mapa.</p>
+                            </div>
+                            <select id="visibilidad-ubicacion">
+                                <option>Aproximada</option>
+                                <option>Oculta</option>
+                            </select>
+                        </div>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="visibilidad-planes">Planes y actividad</label>
+                                <p>Controla quién puede ver tus planes.</p>
+                            </div>
+                            <select id="visibilidad-planes">
+                                <option>Públicos</option>
+                                <option>Solo yo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section id="pantalla-mapa" class="vista-aplicacion pantalla" aria-label="Mapa social">
-        <header class="barra-superior">
-        <a class="marca" href="#pantalla-mapa" aria-label="Nexo, mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="acciones-superiores">
-        <a class="boton boton-principal boton-pequeno" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear pin</a><a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
-        </div>
-        </header>
-        <p id="estado-mapa" class="estado-mapa" role="status">Haz clic en el mapa para crear un pin. Tus pines se guardan en este navegador.</p>
-        <div class="distribucion-aplicacion">
-        <aside class="barra-lateral" aria-label="Navegación principal">
-        <a class="elemento-navegacion activo" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa-amarillo.svg" alt=""></span>Mapa</a> <a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Mis planes</a> <a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes<span class="contador-navegacion">3</span></a> <a class="perfil-lateral enlace-perfil-lateral" href="#pantalla-perfil"><img class="avatar-usuario" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil</small></span><span class="indicador-perfil"><img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></span></a>
-        </aside>
-        <aside class="panel-planes-cercanos">
-        <div class="encabezado-panel">
-        <div>
-        <span class="subtitulo-seccion">A TU ALREDEDOR</span>
-        <h1>Planes cerca</h1>
-        </div>
-        <span id="contador-planes-cercanos" class="contador-resultados">0</span>
-        </div>
-        <p class="texto-secundario descripcion-panel">Explora los planes que pasan cerca de ti</p>
-        <div id="lista-planes-cercanos" class="lista-planes-cercanos" aria-live="polite"></div>
-        <a class="enlace-todos-planes" href="#mis-planes">Ver todos mis planes <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
-        </aside>
-        <div class="area-mapa espacio-mapa" id="espacio-mapa-principal"><div class="mapa-interactivo" id="contenedor-mapa" aria-label="Mapa de planes"></div></div>
-        </div>
-    </section>
+        <section id="ajustes-notificaciones" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-ajustes-notificaciones">
+            <header class="barra-superior-ajustes">
+                <!-- La marca y este enlace vuelven al mapa. -->
+                <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <span class="ruta-ajustes">CONFIGURACIÓN / NOTIFICACIONES</span>
+                <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
+            </header>
+            <div class="distribucion-ajustes">
+                <aside class="barra-lateral-ajustes">
+                    <p class="subtitulo-ajustes">AJUSTES</p>
+                    <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
+                    <!-- Navegación entre Cuenta, Privacidad, Notificaciones y Perfil; cerrar sesión solo cambia de vista. -->
+                    <nav class="navegacion-ajustes" aria-label="Configuración">
+                        <a href="#ajustes-cuenta"><span aria-hidden="true">01</span>Cuenta</a>
+                        <a href="#ajustes-privacidad"><span aria-hidden="true">02</span>Privacidad</a>
+                        <a href="#ajustes-notificaciones" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">03</span>Notificaciones</a>
+                        <a href="#pantalla-perfil"><span aria-hidden="true">04</span>Mi perfil</a>
+                    </nav>
+                    <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
+                </aside>
+                <div class="contenido-ajustes">
+                    <div class="encabezado-ajustes">
+                        <div>
+                            <p class="subtitulo-ajustes">MANTENTE AL DÍA</p>
+                            <h1 id="titulo-ajustes-notificaciones">Notificaciones</h1>
+                            <p>Elige las novedades que quieres recibir.</p>
+                        </div>
+                    </div>
+                    <div class="tarjeta-ajustes">
+                        <h2>Preferencias</h2>
+                        <p class="nota-ajustes">Vista previa: estos cambios aún no se guardan.</p>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="mensajes-nuevos">Mensajes nuevos</label>
+                                <p>Recibe avisos cuando alguien escriba en tus chats.</p>
+                            </div>
+                            <input class="interruptor-ajustes" type="checkbox" id="mensajes-nuevos" checked>
+                        </div>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="actividad-plan">Actividad de tus planes</label>
+                                <p>Entérate de nuevas personas y cambios en tus planes.</p>
+                            </div>
+                            <input class="interruptor-ajustes" type="checkbox" id="actividad-plan" checked>
+                        </div>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="recordatorios">Recordatorios</label>
+                                <p>Recibe un aviso antes de cada encuentro.</p>
+                            </div>
+                            <input class="interruptor-ajustes" type="checkbox" id="recordatorios" checked>
+                        </div>
+                        <div class="opcion-ajustes">
+                            <div>
+                                <label for="novedades-nexo">Novedades de Nexo</label>
+                                <p>Recibe recomendaciones y novedades de la comunidad.</p>
+                            </div>
+                            <input class="interruptor-ajustes" type="checkbox" id="novedades-nexo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section id="crear-plan" class="vista-aplicacion pantalla" aria-label="Crear un plan">
-        <header class="barra-superior">
-        <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="acciones-superiores">
-        <a class="boton boton-secundario boton-pequeno" href="#pantalla-mapa">Cancelar</a><a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
-        </div>
-        </header>
-        <div class="distribucion-aplicacion distribucion-creacion">
-        <aside class="barra-lateral" aria-label="Navegación principal">
-        <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a><a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Mis planes</a><a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes</a>
-        </aside>
-        <div class="mapa-creacion area-mapa espacio-mapa" id="espacio-mapa-creacion"></div>
-        <div class="panel-formulario-creacion">
-        <div class="etiqueta-paso">CREAR PIN</div>
-        <h1>Elige el punto de encuentro</h1>
-        <div class="direccion-seleccionada">
-        <strong id="ubicacion-pin">Haz clic en el mapa para elegir un punto</strong>
-        </div>
-        <form class="formulario-plan" action="#pantalla-mapa">
-        <h2>Crea un encuentro</h2>
-        <p class="texto-secundario">Cuéntale a la gente qué van a hacer y cuándo.</p>
-        <label for="nombre-plan">¿Qué plan tienes en mente?</label>
-        <input id="nombre-plan" required maxlength="120" type="text" placeholder="Ej. Tarde de fútbol" value="Tarde de fútbol">
-        <label for="referencia-plan">Lugar o referencia (opcional)</label>
-        <input id="referencia-plan" maxlength="120" type="text" placeholder="Ej. Cancha 2, Parque La Sabana">
+        <section id="pantalla-perfil" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-pantalla-perfil">
+            <header class="barra-superior-ajustes">
+                <!-- La marca y este enlace vuelven al mapa. -->
+                <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <span class="ruta-ajustes">CONFIGURACIÓN / MI PERFIL</span>
+                <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
+            </header>
+            <div class="distribucion-ajustes">
+                <aside class="barra-lateral-ajustes">
+                    <p class="subtitulo-ajustes">AJUSTES</p>
+                    <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
+                    <!-- Enlaces de navegación a cada ajuste; Cerrar sesión es solo un enlace a la pantalla de acceso. -->
+                    <nav class="navegacion-ajustes" aria-label="Configuración">
+                        <a href="#ajustes-cuenta"><span aria-hidden="true">01</span>Cuenta</a>
+                        <a href="#ajustes-privacidad"><span aria-hidden="true">02</span>Privacidad</a>
+                        <a href="#ajustes-notificaciones"><span aria-hidden="true">03</span>Notificaciones</a>
+                        <a href="#pantalla-perfil" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">04</span>Mi perfil</a>
+                    </nav>
+                    <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
+                </aside>
+                <div class="contenido-ajustes">
+                    <div class="encabezado-ajustes">
+                        <div>
+                            <p class="subtitulo-ajustes">TU COMUNIDAD</p>
+                            <h1 id="titulo-pantalla-perfil">Mi perfil</h1>
+                            <p>Así te ven las personas que comparten planes contigo.</p>
+                        </div>
+                        <!-- Abre Cuenta, pero no habilita edición en esta maqueta. -->
+                        <a class="boton boton-principal" href="#ajustes-cuenta">Configurar cuenta</a>
+                    </div>
+                    <div class="cuadricula-perfil">
+                        <article class="tarjeta-ajustes tarjeta-perfil">
+                            <div class="portada-perfil"></div>
+                            <div class="contenido-perfil"><img class="avatar-perfil" src="imagenes/avatar.svg" alt="">
+                                <h2>Mateo Rojas</h2>
+                                <p class="nombre-usuario-perfil">@mateo · San José, Costa Rica</p>
+                                <div class="informacion-perfil">
+                                    <h3>Sobre mí</h3>
+                                    <p>Me gusta conocer gente, jugar fútbol y descubrir nuevos lugares.</p>
+                                    <h3>Miembro desde</h3>
+                                    <p>Noviembre de 2026</p>
+                                </div>
+                            </div>
+                        </article>
+                        <section class="tarjeta-ajustes actividad-perfil">
+                            <p class="subtitulo-ajustes">ACTIVIDAD</p>
+                            <h2>Planes compartidos</h2>
+                            <p>Una mirada a los encuentros de Mateo.</p>
+                            <!-- El primer enlace abre el detalle y los otros llevan a Publicaciones. -->
+                            <a class="plan-perfil" href="#detalle-plan"><span><img class="icono" src="imagenes/iconos/destello.svg" alt=""></span><span><strong>Tarde de fútbol</strong><small>La Sabana · 8 personas</small></span></a>
+                            <a class="plan-perfil" href="#mis-planes"><span><img class="icono" src="imagenes/iconos/destello.svg" alt=""></span><span><strong>Club de lectura</strong><small>Barrio Escalante · 5 personas</small></span></a>
+                            <a class="enlace-planes-perfil" href="#mis-planes">Ver publicaciones <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
+                        </section>
 
-        <div class="fila-formulario">
-        <div>
-        <label for="fecha-plan">Fecha</label>
-        <input id="fecha-plan" type="text" value="Sábado, 7 de noviembre">
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        </div>
-        <div>
-        <label for="hora-plan">Hora</label>
-        <input id="hora-plan" type="text" value="4:30 p. m.">
+        <section id="acerca-de" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-acerca">
+            <header class="barra-superior-ajustes">
+                <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
+                <a class="volver-desde-ajustes" href="#pantalla-mapa">Volver al mapa</a>
+            </header>
+            <div class="tarjeta-ajustes tarjeta-acerca">
+                <h1 id="titulo-acerca">Acerca de Nexo</h1>
+                <p>Nexo es una red social ficticia para encontrar gente con quien jugar, leer, salir en bici o proponer un nuevo encuentro.</p>
+                <p>Explora los planes en el mapa, publica un punto de encuentro o conversa en el chat de un plan. Las publicaciones y los mensajes se guardan en tu navegador.</p>
+                <footer>Proyecto de Programación para Web · Décimo año</footer>
+            </div>
+        </section>
+    </main>
 
-        </div>
-        </div>
-        <label for="descripcion-plan">Descripción</label><textarea id="descripcion-plan" rows="4" placeholder="Agrega algunos detalles">Jugamos un partido amistoso en la cancha 2. Trae agua y llega 10 minutos antes para armar equipos.</textarea>
-        <fieldset>
-        <legend>Visibilidad</legend><label class="opcion-visibilidad">
-        <input type="radio" name="visibilidad" checked>
-
-        <span class="icono-opcion"><img class="icono" src="imagenes/iconos/circulo-punto-amarillo.svg" alt=""></span><span><strong>Solo en este navegador</strong><small>Este pin todavía no se comparte con otros usuarios</small></span></label></fieldset>
-        <div class="fila-publicacion">
-        <p>El pin se guarda en este navegador. Su ubicación queda fija al publicarlo; puedes eliminarlo desde el mapa.</p>
-        <button class="boton boton-principal" type="submit">Publicar pin <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
-        </div>
-        </form>
-        </div>
-        </div>
-    </section>
-
-    <section id="detalle-plan" class="vista-aplicacion pantalla" aria-label="Detalle del plan">
-        <header class="barra-superior">
-        <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="acciones-superiores">
-        <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
-        </div>
-        </header>
-        <div class="area-detalle">
-        <div class="mapa-detalle area-mapa espacio-mapa" id="espacio-mapa-detalle">
-        <a class="volver-mapa" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda.svg" alt=""> Volver al mapa</a>
-        </div>
-        <aside class="tarjeta-detalle">
-        <div class="cabecera-tarjeta-detalle">
-        <span id="detalle-categoria" class="categoria-detalle">Plan deportivo</span>
-        <div class="acciones-cabecera-detalle">
-        <button id="eliminar-pin-detalle" class="eliminar-pin-detalle" type="button">Eliminar pin</button>
-        <a href="#pantalla-mapa" class="enlace-cerrar" aria-label="Cerrar detalle"><img class="icono" src="imagenes/iconos/cerrar.svg" alt=""></a>
-        </div>
-        </div>
-        <h1 id="detalle-nombre">Tarde de fútbol</h1>
-        <p id="detalle-creador" class="anfitrion-detalle">Creado por <strong>Mateo Rojas</strong> · anfitrión</p>
-        <div class="datos-detalle">
-        <div>
-        <span class="icono-dato"><img class="icono" src="imagenes/iconos/reloj-cian.svg" alt=""></span><span><strong>Fecha y hora</strong><small id="detalle-fecha-hora">Sábado, 7 de noviembre · 4:30 p. m.</small></span>
-        </div>
-        <div>
-        <span class="icono-dato"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span><strong>Punto de encuentro</strong><small id="detalle-lugar">Cancha 2 · Parque La Sabana</small></span>
-        </div>
-        </div>
-        <div class="descripcion-detalle">
-        <h2>Sobre este plan</h2>
-        <p id="detalle-descripcion">Partido amistoso para pasar la tarde y conocer gente nueva. No hace falta traer equipo: armamos los grupos al llegar.</p>
-        </div>
-        <div class="encabezado-asistentes">
-        <h2>Personas que se unen</h2>
-        <span id="detalle-total-personas" class="total-personas">8 personas</span>
-        </div>
-        <div id="detalle-asistentes" class="grupo-avatares" aria-live="polite"></div>
-        <div class="acciones-detalle">
-        <a class="boton boton-principal boton-chat-detalle" href="#pantalla-chat">Unirme al chat <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></a>
-        <a class="guardar-plan" href="#mis-planes"><img class="icono" src="imagenes/iconos/estrella.svg" alt=""> Guardar plan</a>
-        </div>
-        </aside>
-        </div>
-    </section>
-
-    <section id="pantalla-chat" class="vista-aplicacion pantalla" aria-label="Chat del plan">
-        <header class="barra-superior">
-        <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="acciones-superiores">
-        <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
-        </div>
-        </header>
-        <div class="distribucion-chat">
-        <aside class="barra-lateral navegacion-chat" aria-label="Navegación principal">
-        <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a><a class="elemento-navegacion" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj.svg" alt=""></span>Mis planes</a><a class="elemento-navegacion activo" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje-amarillo.svg" alt=""></span>Mensajes<span class="contador-navegacion">3</span></a>
-        </aside>
-        <aside class="lista-chats">
-        <div class="encabezado-panel">
-        <div>
-        <span class="subtitulo-seccion">CHATS RECIENTES</span>
-        <h1>Conversaciones</h1>
-        </div>
-        <span class="contador-resultados">0</span>
-        </div>
-        <div class="lista-conversaciones" aria-live="polite"></div>
-        </aside>
-    <section class="conversacion" aria-label="Mensajes de Tarde de fútbol">
-        <header class="encabezado-conversacion">
-        <div class="icono-chat futbol">
-        <img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></div>
-        <div>
-        <strong>Tarde de fútbol</strong><small>8 personas · La Sabana · Sáb, 7 nov</small></div>
-        <a class="enlace-detalles-chat" href="#detalle-plan">Ver detalles del plan</a>
-        </header>
-        <div class="lista-mensajes">
-        <div class="separador-fecha">SÁBADO, 7 DE NOVIEMBRE</div>
-        <p class="mensaje-sistema">Mateo creó este plan y comenzó el grupo.</p>
-        <article class="mensaje">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt="">
-        <div>
-        <small class="autor-mensaje">Mateo · creador</small>
-        <p>¡Qué bueno que se apuntaron! Nos vemos junto a la cancha 2.</p>
-        <time>4:42 p. m.</time></div>
-        </article>
-        <article class="mensaje">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt="">
-        <div>
-        <small class="autor-mensaje">Sofía</small>
-        <p>¿Hay que llevar balón o ya tienen?</p>
-        <time>4:45 p. m.</time></div>
-        </article>
-        <article class="mensaje enviado">
-        <div>
-        <p>Yo llevo uno, por si acaso <img class="icono" src="imagenes/iconos/futbol.svg" alt="balón"></p>
-        <time>4:46 p. m. · leído por 5</time></div>
-        </article>
-        <article class="mensaje">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt="">
-        <div>
-        <small class="autor-mensaje">Ana</small>
-        <p>¡Perfecto! ¿A qué hora nos encontramos?</p>
-        <time>4:49 p. m.</time></div>
-        </article>
-        </div>
-        <form class="formulario-mensaje" action="#pantalla-chat">
-        <label class="oculto-visualmente" for="campo-mensaje">Escribe un mensaje para el grupo</label>
-        <input id="campo-mensaje" type="text" placeholder="Escribe un mensaje para el grupo…">
-
-        <button type="submit" aria-label="Enviar mensaje"><img class="icono" src="imagenes/iconos/flecha-arriba-oscuro.svg" alt=""></button>
-        </form>
-    </section>
-
-        <aside class="detalles-chat">
-        <span class="subtitulo-seccion">DETALLES DEL PLAN</span>
-        <h2>Tarde de fútbol</h2>
-        <p class="texto-secundario">Sáb, 7 nov · 4:30 p. m.</p>
-        <p class="texto-secundario">Cancha 2 · Parque La Sabana<br>San José, Costa Rica</p>
-        <div class="encabezado-participantes">
-        <strong>Participantes</strong><span>8</span>
-        </div>
-        <div class="participante">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Mateo Rojas · creador</strong><span class="estrella-anfitrion"><img class="icono" src="imagenes/iconos/estrella-amarillo.svg" alt=""></span>
-        </div>
-        <div class="participante">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Sofía Vargas</strong></div>
-        <div class="participante">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Ana Méndez</strong></div>
-        <div class="participante">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Julián Castro</strong></div>
-        <div class="participante">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt=""><strong>Lucía Mora</strong></div>
-        <p class="participantes-adicionales">+ 3 personas más</p>
-        <div class="nota-chat">
-        <p>Este chat es solo para quienes se unieron al pin.</p>
-        <p>Coordinen aquí los últimos detalles del encuentro.</p>
-        </div>
-        <a class="enlace-mapa" href="#detalle-plan"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""> Ver ubicación en el mapa</a>
-        </aside>
-        </div>
-    </section>
-
-    <section id="mis-planes" class="vista-aplicacion pantalla" aria-label="Mis planes">
-        <header class="barra-superior">
-        <a class="marca" href="#pantalla-mapa" aria-label="Nexo, mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="acciones-superiores">
-        <a class="boton boton-principal boton-pequeno" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear pin</a><a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
-        </div>
-        </header>
-        <div class="distribucion-aplicacion distribucion-planes">
-        <aside class="barra-lateral" aria-label="Navegación principal">
-        <a class="elemento-navegacion" href="#pantalla-mapa"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/marcador-mapa.svg" alt=""></span>Mapa</a><a class="elemento-navegacion activo" href="#mis-planes"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/reloj-amarillo.svg" alt=""></span>Mis planes</a><a class="elemento-navegacion" href="#pantalla-chat"><span class="icono-navegacion"><img class="icono" src="imagenes/iconos/burbuja-mensaje.svg" alt=""></span>Mensajes<span class="contador-navegacion">3</span></a><a class="perfil-lateral enlace-perfil-lateral" href="#pantalla-perfil"><img class="avatar-usuario" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil</small></span></a>
-        </aside>
-        <div class="contenido-planes">
-        <div class="titulo-planes">
-        <div>
-        <span class="subtitulo-seccion">TU COMUNIDAD</span>
-        <h1>Mis planes</h1>
-        <p class="texto-secundario">Encuentros que organizaste o a los que te uniste.</p>
-        </div>
-        <a class="boton boton-principal" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear un plan</a>
-        </div>
-        <nav class="pestanas-planes" aria-label="Filtrar planes">
-        <a class="seleccionada" href="#mis-planes">Próximos <span id="contador-mis-planes">0</span></a><a href="#mis-planes">Organizados</a><a href="#mis-planes">Pasados</a>
-        </nav>
-        <div id="cuadricula-mis-planes" class="cuadricula-mis-planes" aria-live="polite"></div>
-        </div>
-        </div>
-    </section>
-
-    <section id="ajustes-cuenta" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-ajustes-cuenta">
-        <header class="barra-superior-ajustes">
-        <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a> <span class="ruta-ajustes">CONFIGURACIÓN / CUENTA</span> <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
-        </header>
-        <div class="distribucion-ajustes">
-        <aside class="barra-lateral-ajustes">
-        <p class="subtitulo-ajustes">AJUSTES</p>
-        <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
-        <nav class="navegacion-ajustes" aria-label="Configuración">
-        <a href="#ajustes-cuenta" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">01</span>Cuenta</a> <a href="#ajustes-privacidad"><span aria-hidden="true">02</span>Privacidad</a> <a href="#ajustes-notificaciones"><span aria-hidden="true">03</span>Notificaciones</a> <a href="#pantalla-perfil"><span aria-hidden="true">04</span>Mi perfil</a>
-        </nav>
-        <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
-        </aside>
-        <div class="contenido-ajustes">
-        <div class="encabezado-ajustes">
-        <div>
-        <p class="subtitulo-ajustes">TU CUENTA</p>
-        <h1 id="titulo-ajustes-cuenta">Cuenta</h1>
-        <p>Administra tus datos y la seguridad de tu cuenta.</p>
-        </div>
-        </div>
-        <div class="tarjeta-ajustes">
-        <h2>Datos personales</h2>
-        <dl class="lista-cuenta">
-        <div>
-        <dt>Nombre de usuario</dt>
-        <dd>Mateo Rojas</dd>
-        </div>
-        <div>
-        <dt>Correo electrónico</dt>
-        <dd>m•••••@correo.com</dd>
-        </div>
-        <div>
-        <dt>Teléfono</dt>
-        <dd>No agregado</dd>
-        </div>
-        </dl>
-        </div>
-        <div class="tarjeta-ajustes">
-        <h2>Contraseña y seguridad</h2>
-        <dl class="lista-cuenta">
-        <div>
-        <dt>Contraseña</dt>
-        <dd>••••••••••••</dd>
-        </div>
-        <div>
-        <dt>Verificación en dos pasos</dt>
-        <dd>No configurada</dd>
-        </div>
-        <div>
-        <dt>Sesiones activas</dt>
-        <dd>Dispositivo actual</dd>
-        </div>
-        </dl>
-        </div>
-        <p class="nota-ajustes">Los datos mostrados son de ejemplo. La edición de cuenta estará disponible próximamente.</p>
-        </div>
-        </div>
-    </section>
-
-    <section id="ajustes-privacidad" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-ajustes-privacidad">
-        <header class="barra-superior-ajustes">
-        <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a> <span class="ruta-ajustes">CONFIGURACIÓN / PRIVACIDAD</span> <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
-        </header>
-        <div class="distribucion-ajustes">
-        <aside class="barra-lateral-ajustes">
-        <p class="subtitulo-ajustes">AJUSTES</p>
-        <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
-        <nav class="navegacion-ajustes" aria-label="Configuración">
-        <a href="#ajustes-cuenta"><span aria-hidden="true">01</span>Cuenta</a> <a href="#ajustes-privacidad" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">02</span>Privacidad</a> <a href="#ajustes-notificaciones"><span aria-hidden="true">03</span>Notificaciones</a> <a href="#pantalla-perfil"><span aria-hidden="true">04</span>Mi perfil</a>
-        </nav>
-        <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
-        </aside>
-        <div class="contenido-ajustes">
-        <div class="encabezado-ajustes">
-        <div>
-        <p class="subtitulo-ajustes">TU SEGURIDAD</p>
-        <h1 id="titulo-ajustes-privacidad">Privacidad</h1>
-        <p>Controla quién puede ver tu información y contactarte.</p>
-        </div>
-        </div>
-        <div class="tarjeta-ajustes">
-        <h2>Visibilidad y contacto</h2>
-        <p class="nota-ajustes">Vista previa: estos cambios aún no se guardan.</p>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="visibilidad-perfil">Visibilidad del perfil</label>
-        <p>Elige quién puede consultar tu perfil.</p>
-        </div>
-        <select id="visibilidad-perfil"><option>Todos</option><option>Participantes</option><option>Solo yo</option></select></div>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="mensajes-directos">Mensajes directos</label>
-        <p>Controla quién puede enviarte mensajes.</p>
-        </div>
-        <select id="mensajes-directos"><option>Participantes</option><option>Todos</option><option>Nadie</option></select></div>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="visibilidad-ubicacion">Ubicación</label>
-        <p>Decide cómo se muestra tu ubicación en el mapa.</p>
-        </div>
-        <select id="visibilidad-ubicacion"><option>Aproximada</option><option>Oculta</option></select></div>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="visibilidad-planes">Planes y actividad</label>
-        <p>Controla quién puede ver tus planes.</p>
-        </div>
-        <select id="visibilidad-planes"><option>Públicos</option><option>Solo yo</option></select></div>
-        </div>
-        </div>
-        </div>
-    </section>
-
-    <section id="ajustes-notificaciones" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-ajustes-notificaciones">
-        <header class="barra-superior-ajustes">
-        <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a> <span class="ruta-ajustes">CONFIGURACIÓN / NOTIFICACIONES</span> <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
-        </header>
-        <div class="distribucion-ajustes">
-        <aside class="barra-lateral-ajustes">
-        <p class="subtitulo-ajustes">AJUSTES</p>
-        <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
-        <nav class="navegacion-ajustes" aria-label="Configuración">
-        <a href="#ajustes-cuenta"><span aria-hidden="true">01</span>Cuenta</a> <a href="#ajustes-privacidad"><span aria-hidden="true">02</span>Privacidad</a> <a href="#ajustes-notificaciones" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">03</span>Notificaciones</a> <a href="#pantalla-perfil"><span aria-hidden="true">04</span>Mi perfil</a>
-        </nav>
-        <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
-        </aside>
-        <div class="contenido-ajustes">
-        <div class="encabezado-ajustes">
-        <div>
-        <p class="subtitulo-ajustes">MANTENTE AL DÍA</p>
-        <h1 id="titulo-ajustes-notificaciones">Notificaciones</h1>
-        <p>Elige las novedades que quieres recibir.</p>
-        </div>
-        </div>
-        <div class="tarjeta-ajustes">
-        <h2>Preferencias</h2>
-        <p class="nota-ajustes">Vista previa: estos cambios aún no se guardan.</p>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="mensajes-nuevos">Mensajes nuevos</label>
-        <p>Recibe avisos cuando alguien escriba en tus chats.</p>
-        </div>
-        <input class="interruptor-ajustes" type="checkbox" id="mensajes-nuevos" checked>
-
-        </div>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="actividad-plan">Actividad de tus planes</label>
-        <p>Entérate de nuevas personas y cambios en tus planes.</p>
-        </div>
-        <input class="interruptor-ajustes" type="checkbox" id="actividad-plan" checked>
-
-        </div>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="recordatorios">Recordatorios</label>
-        <p>Recibe un aviso antes de cada encuentro.</p>
-        </div>
-        <input class="interruptor-ajustes" type="checkbox" id="recordatorios" checked>
-
-        </div>
-        <div class="opcion-ajustes">
-        <div>
-        <label for="novedades-nexo">Novedades de Nexo</label>
-        <p>Recibe recomendaciones y novedades de la comunidad.</p>
-        </div>
-        <input class="interruptor-ajustes" type="checkbox" id="novedades-nexo">
-
-        </div>
-        </div>
-        </div>
-        </div>
-    </section>
-
-    <section id="pantalla-perfil" class="vista-aplicacion pantalla pantalla-ajustes" aria-labelledby="titulo-pantalla-perfil">
-        <header class="barra-superior-ajustes">
-        <a class="marca" href="#pantalla-mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a> <span class="ruta-ajustes">CONFIGURACIÓN / MI PERFIL</span> <a class="volver-desde-ajustes" href="#pantalla-mapa"><img class="icono" src="imagenes/iconos/flecha-izquierda-cian.svg" alt=""> Volver al mapa</a>
-        </header>
-        <div class="distribucion-ajustes">
-        <aside class="barra-lateral-ajustes">
-        <p class="subtitulo-ajustes">AJUSTES</p>
-        <a class="usuario-ajustes" href="#pantalla-perfil"><img class="avatar-ajustes" src="imagenes/avatar.svg" alt=""><span><strong>Mateo Rojas</strong><small>Ver mi perfil <img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></small></span></a>
-        <nav class="navegacion-ajustes" aria-label="Configuración">
-        <a href="#ajustes-cuenta"><span aria-hidden="true">01</span>Cuenta</a> <a href="#ajustes-privacidad"><span aria-hidden="true">02</span>Privacidad</a> <a href="#ajustes-notificaciones"><span aria-hidden="true">03</span>Notificaciones</a> <a href="#pantalla-perfil" class="opcion-ajustes-activa" aria-current="page"><span aria-hidden="true">04</span>Mi perfil</a>
-        </nav>
-        <a class="cerrar-sesion" href="#pantalla-inicio-sesion">Cerrar sesión</a>
-        </aside>
-        <div class="contenido-ajustes">
-        <div class="encabezado-ajustes">
-        <div>
-        <p class="subtitulo-ajustes">TU COMUNIDAD</p>
-        <h1 id="titulo-pantalla-perfil">Mi perfil</h1>
-        <p>Así te ven las personas que comparten planes contigo.</p>
-        </div>
-        <a class="boton boton-principal" href="#ajustes-cuenta">Configurar cuenta</a>
-        </div>
-        <div class="cuadricula-perfil">
-        <article class="tarjeta-ajustes tarjeta-perfil">
-        <div class="portada-perfil"> </div>
-        <div class="contenido-perfil">
-        <img class="avatar-perfil" src="imagenes/avatar.svg" alt="">
-        <h2>Mateo Rojas</h2>
-        <p class="nombre-usuario-perfil">@mateo · San José, Costa Rica</p>
-        <div class="informacion-perfil">
-        <h3>Sobre mí</h3>
-        <p>Me gusta conocer gente, jugar fútbol y descubrir nuevos lugares.</p>
-        <h3>Miembro desde</h3>
-        <p>Noviembre de 2026</p>
-        </div>
-        </div>
-        </article>
-    <section class="tarjeta-ajustes actividad-perfil">
-        <p class="subtitulo-ajustes">ACTIVIDAD</p>
-        <h2>Planes compartidos</h2>
-        <p>Una mirada a los encuentros de Mateo.</p>
-        <a class="plan-perfil" href="#detalle-plan"><span><img class="icono" src="imagenes/iconos/destello.svg" alt=""></span><span><strong>Tarde de fútbol</strong><small>La Sabana · 8 personas</small></span></a><a class="plan-perfil" href="#mis-planes"><span><img class="icono" src="imagenes/iconos/destello.svg" alt=""></span><span><strong>Club de lectura</strong><small>Barrio Escalante · 5 personas</small></span></a><a class="enlace-planes-perfil" href="#mis-planes">Ver mis planes <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
-    </section>
-
-        </div>
-        </div>
-        </div>
-    </section>
-
-        <div id="nota-terminos" class="oculto-visualmente">Términos de servicio pendientes de redactar.</div>
-        <div id="nota-privacidad" class="oculto-visualmente">Política de privacidad pendiente de redactar.</div>
+    <!-- Destinos temporales para enlaces a textos legales todavía no redactados. -->
+    <div id="nota-terminos" class="oculto-visualmente">Términos de servicio pendientes de redactar.</div>
+    <div id="nota-privacidad" class="oculto-visualmente">Política de privacidad pendiente de redactar.</div>
+    <!-- defer conserva el orden: primero Leaflet, luego el mapa y después el chat. -->
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="javascript/mapa.js"></script>
     <script defer src="javascript/chat.js"></script>

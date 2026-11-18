@@ -1,3 +1,4 @@
+/* Base del documento y formulario de acceso/registro. */
 :root {
     color-scheme: dark;
     font-family: Inter, "Segoe UI", Arial, sans-serif;
@@ -277,6 +278,7 @@ body {
 
 }
 
+/* Navegación por fragmentos: se enseña la sección cuyo id coincide con #... */
 .pantalla { display: none; }
 
 body:not(:has(.pantalla:target)) #pantalla-inicio-sesion { display: block; }
@@ -421,6 +423,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
     line-height: 1.6;
 }
 
+/* Estructura común de las pantallas principales y sus barras superiores. */
 .vista-aplicacion {
     min-height: 100vh;
     min-height: 100svh;
@@ -501,6 +504,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
     text-decoration: none;
 }
 
+/* Columnas del área principal: navegación, planes cercanos y mapa. */
 .distribucion-aplicacion { display: grid; height: calc(100svh - 68px); min-height: 580px; grid-template-columns: 244px minmax(310px, 352px) minmax(0, 1fr); }
 
 .barra-lateral {
@@ -557,6 +561,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
     background: var(--panel-elevado);
 }
 
+/* Tarjetas de planes y panel lateral del mapa. */
 .panel-planes-cercanos { overflow-y: auto; }
 
 .encabezado-panel { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
@@ -609,6 +614,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 .enlace-todos-planes { display: flex; justify-content: space-between; margin: 14px 0 0; padding: 12px 3px; color: var(--azul-enlace); font-size: 11px; }
 
+/* El mismo mapa se usa en la pantalla principal y en la pantalla de creación. */
 .area-mapa {
     position: relative;
     min-width: 0;
@@ -641,9 +647,11 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 .formulario-plan > label, .fila-formulario label, .formulario-plan legend { display: block; margin: 15px 0 7px; color: var(--texto); font-size: 11px; font-weight: 600; }
 
-.formulario-plan input[type="text"], .formulario-plan textarea { display: block; width: 100%; min-height: 42px; padding: 10px 12px; border: 1px solid var(--borde); border-radius: 8px; outline: 0; background: var(--panel-elevado); color: var(--texto); font: inherit; font-size: 11px; resize: vertical; }
+.formulario-plan input[type="text"], .formulario-plan textarea, .formulario-plan select { display: block; width: 100%; min-height: 42px; padding: 10px 12px; border: 1px solid var(--borde); border-radius: 8px; outline: 0; background: var(--panel-elevado); color: var(--texto); font: inherit; font-size: 11px; }
 
-.formulario-plan input:focus, .formulario-plan textarea:focus { border-color: var(--azul-enlace); box-shadow: 0 0 0 3px #a8c7fa22; }
+.formulario-plan textarea { resize: vertical; }
+
+.formulario-plan input:focus, .formulario-plan textarea:focus, .formulario-plan select:focus { border-color: var(--azul-enlace); box-shadow: 0 0 0 3px #a8c7fa22; }
 
 .fila-formulario { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
 
@@ -673,6 +681,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 .fila-publicacion .boton { min-height: 42px; padding: 0 14px; font-size: 11px; }
 
+/* Ficha del plan colocada encima del mapa. */
 .area-detalle { position: relative; height: calc(100svh - 68px); min-height: 650px; overflow: hidden; background: #383d42; }
 
 .mapa-detalle { position: absolute; inset: 0; }
@@ -758,10 +767,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 .nota-detalle { margin: 10px 0 0; color: var(--texto-tenue); font-size: 9px; text-align: center; }
 
-.guardar-plan { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; margin-top: 12px; border: 1px solid var(--borde); border-radius: 9px; color: var(--texto); font-size: 10px; }
-
-.guardar-plan:hover { background: #383d42; text-decoration: none; }
-
+/* Chat: navegación, lista de conversaciones, mensajes y detalles del pin. */
 .distribucion-chat { display: grid; height: calc(100svh - 68px); min-height: 580px; grid-template-columns: 82px minmax(245px, 300px) minmax(380px, 1fr) minmax(245px, 310px); }
 
 .navegacion-chat { padding: 39px 10px 18px; }
@@ -872,6 +878,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 .enlace-mapa { display: flex; align-items: center; gap: 8px; margin-top: 16px; color: var(--azul-enlace); font-size: 9px; }
 
+/* Cuadrícula de la pantalla Mis planes. */
 .distribucion-planes { grid-template-columns: 244px minmax(0,1fr); }
 
 .contenido-planes { overflow: auto; padding: 42px clamp(25px, 5vw, 82px); background: var(--panel-elevado); }
@@ -881,18 +888,6 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 .titulo-planes h1 { margin: 8px 0 6px; font-size: 28px; letter-spacing: -.04em; }
 
 .titulo-planes p { margin: 0; font-size: 11px; }
-
-.pestanas-planes { display: flex; gap: 25px; max-width: 1120px; margin: 34px auto 22px; border-bottom: 1px solid var(--borde); }
-
-.pestanas-planes a { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 0 13px; color: var(--texto-tenue); font-size: 11px; }
-
-.pestanas-planes a:hover { color: var(--texto); text-decoration: none; }
-
-.pestanas-planes a.seleccionada { color: var(--azul-enlace); }
-
-.pestanas-planes a.seleccionada::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--azul-enlace); content: ""; }
-
-.pestanas-planes a span { display: grid; width: 18px; height: 18px; place-items: center; border-radius: 50%; background: #383d42; font-size: 9px; }
 
 .cuadricula-mis-planes { display: grid; max-width: 1120px; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin: 0 auto; }
 
@@ -922,6 +917,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 .pie-tarjeta-plan { display: flex; justify-content: space-between; margin-top: auto; padding-top: 17px; color: var(--azul-enlace); font-size: 10px; }
 
+/* Utilidad accesible y ajustes de diseño para pantallas medianas y móviles. */
 .oculto-visualmente { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; clip-path: inset(50%) !important; }
 
 @media (max-width: 1050px) {
@@ -992,8 +988,6 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
     .tarjeta-plan { min-height: 76px; }
 
-    .tarjeta-plan:nth-of-type(n+4) { display: none; }
-
     .enlace-todos-planes { margin-top: 3px; }
 
     .area-mapa { order: 0; min-height: 360px; }
@@ -1048,8 +1042,6 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
     .titulo-planes .boton { min-height: 37px; padding: 0 9px; font-size: 9px; }
 
-    .pestanas-planes { gap: 19px; margin-top: 25px; }
-
     .cuadricula-mis-planes { grid-template-columns: 1fr; }
 
     .tarjeta-mi-plan { min-height: 245px; }
@@ -1084,6 +1076,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 }
 
+/* Paleta final y retoques visuales. Estas reglas posteriores ajustan las reglas base de arriba. */
 :root {
     color-scheme: dark;
     --noche: #141516;
@@ -1306,7 +1299,7 @@ a:hover { color: var(--azul-acento); }
 
 .direccion-seleccionada { background: var(--panel); }
 
-.formulario-plan input[type="text"], .formulario-plan textarea { border-radius: 4px; }
+.formulario-plan input[type="text"], .formulario-plan textarea, .formulario-plan select { border-radius: 4px; }
 
 .formulario-plan input:focus, .formulario-plan textarea:focus { border-color: var(--azul-enlace); box-shadow: 0 0 0 2px #a8c7fa25; }
 
@@ -1343,10 +1336,6 @@ a:hover { color: var(--azul-acento); }
 .icono-dato { border-radius: 4px; background: var(--seleccion); }
 
 .descripcion-detalle p { color: var(--texto-tenue); }
-
-.guardar-plan { border-color: var(--borde); border-radius: 4px; color: var(--texto); }
-
-.guardar-plan:hover { background: var(--seleccion); }
 
 .elemento-chat { border-radius: 4px; color: var(--texto); }
 
@@ -1396,16 +1385,6 @@ a:hover { color: var(--azul-acento); }
 
 .titulo-planes h1 { text-shadow: 0 0 20px #a8c7fa24; }
 
-.pestanas-planes { border-bottom-color: var(--borde); }
-
-.pestanas-planes a { color: var(--texto-tenue); }
-
-.pestanas-planes a.seleccionada { color: var(--azul-acento); }
-
-.pestanas-planes a.seleccionada::after { background: var(--azul-acento); box-shadow: 0 0 9px #87bafd77; }
-
-.pestanas-planes a span { background: #383d42; color: var(--azul-enlace); }
-
 .tarjeta-mi-plan { border-color: var(--borde); border-radius: 5px; background: var(--panel); }
 
 .tarjeta-mi-plan:hover { border-color: var(--azul-enlace); box-shadow: 0 0 24px #a8c7fa1c, 0 16px 40px #0006; }
@@ -1433,6 +1412,7 @@ a:hover { color: var(--azul-acento); }
 
 }
 
+/* Pantallas de cuenta y ajustes. Sus controles son solo visuales en esta maqueta. */
 .enlace-perfil-lateral { color: var(--texto); text-decoration: none; }
 
 .enlace-perfil-lateral:hover { color: var(--azul-enlace); }
@@ -1523,6 +1503,7 @@ a:hover { color: var(--azul-acento); }
 
 }
 
+/* Tarjetas del perfil y sus planes de ejemplo. */
 .cuadricula-perfil { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(300px, 1.2fr); gap: 24px; }
 
 .cuadricula-perfil .tarjeta-ajustes { margin: 0; }
@@ -1599,6 +1580,7 @@ a:hover { color: var(--azul-acento); }
 
 }
 
+/* Tamaños compartidos para iconos, avatares y contenedor Leaflet. */
 .logo-google { width: 20px; height: 20px; object-fit: contain; }
 
 .avatar-usuario, .avatar-persona, .avatar-ajustes, .avatar-perfil { object-fit: cover; }
@@ -1663,10 +1645,31 @@ a.avatar-usuario img { width: 100%; height: 100%; object-fit: cover; }
 #detalle-plan .grupo-avatares .avatar-persona:nth-child(even) { background: #1d5268; }
 #detalle-plan .grupo-avatares .personas-inscritas { display: inline-flex; width: auto; min-width: 70px; height: 24px; align-items: center; justify-content: center; margin-left: 4px; padding: 0 10px; border-radius: 14px; background: #25282b; color: #b8d5ff; font-size: 10px; font-weight: 650; }
 #detalle-plan .acciones-detalle { display: grid; grid-template-columns: 1.15fr 1fr; gap: 8px; margin-top: auto; padding-top: 16px; }
-#detalle-plan .boton-chat-detalle, #detalle-plan .guardar-plan { min-height: 38px; margin: 0; padding: 0 10px; border-radius: 9px; font-size: 11px; }
-#detalle-plan .guardar-plan { justify-content: flex-start; }
+#detalle-plan .boton-chat-detalle, #detalle-plan .enlace-publicaciones-detalle { min-height: 38px; margin: 0; padding: 0 10px; border-radius: 9px; font-size: 11px; }
 @media (max-width: 760px) {
     #detalle-plan .area-detalle { height: 100svh; min-height: 0; }
     #detalle-plan .tarjeta-detalle { top: 5px; right: auto; bottom: 5px; left: 0; width: calc(100vw - 8px); max-height: none; padding: 17px; }
     #pantalla-mapa .distribucion-aplicacion { height: auto; }
+}
+
+/* Filtro de publicaciones y datos de cada tarjeta. */
+.filtro-categorias { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px; color: var(--texto-tenue); font-size: 12px; }
+.filtro-categorias select { min-height: 36px; max-width: 100%; padding: 5px 8px; border: 1px solid var(--borde); border-radius: 8px; background: var(--panel-elevado); color: var(--texto); font: inherit; color-scheme: dark; }
+.filtro-publicaciones { max-width: 1120px; margin: 24px auto 18px; }
+.filtro-publicaciones > span { margin-inline-start: auto; }
+.formulario-plan select { color-scheme: dark; }
+.formulario-plan .error-plan { color: #ffb4ab; }
+.formulario-plan .error-plan:empty { display: none; }
+.formulario-plan button:disabled { opacity: .55; cursor: not-allowed; }
+.tarjeta-mi-plan { height: 100%; overflow-wrap: anywhere; }
+.tarjeta-mi-plan > .autor-plan { color: var(--texto); font-weight: 650; }
+.tarjeta-mi-plan > .descripcion-publicacion { margin-block: 7px; font-size: 12px; line-height: 1.45; }
+.tarjeta-mi-plan .datos-mi-plan { flex-wrap: wrap; }
+.tarjeta-acerca { max-width: 640px; margin: clamp(20px, 5vw, 56px) auto; width: calc(100% - 32px); line-height: 1.6; }
+.tarjeta-acerca h1 { margin-top: 0; }
+.tarjeta-acerca footer { margin-top: 24px; color: var(--texto-tenue); font-size: 13px; }
+
+@media (max-width: 760px) {
+    #pantalla-mapa .barra-lateral .elemento-navegacion { min-width: 0; flex: 1; text-align: center; }
+    #pantalla-mapa .lista-planes-cercanos { max-height: 260px; overflow-y: auto; }
 }
