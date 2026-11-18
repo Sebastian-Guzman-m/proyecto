@@ -434,7 +434,7 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
     z-index: 5;
     display: grid;
     height: 68px;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr auto;
     align-items: center;
     padding: 0 28px;
     border-bottom: 1px solid var(--borde);
@@ -456,24 +456,6 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 .marca:hover { color: #fff; text-decoration: none; }
 
 .logo-marca { width: 30px; height: 30px; box-shadow: 0 0 16px #87bafd38; }
-
-.etiqueta-ubicacion {
-    display: flex;
-    min-width: 220px;
-    height: 36px;
-    align-items: center;
-    gap: 10px;
-    padding: 0 12px;
-    border: 1px solid var(--borde);
-    border-radius: 9px;
-    background: var(--panel-elevado);
-    color: var(--texto);
-    font-size: 12px;
-}
-
-.icono-ubicacion { font-size: 18px; line-height: 1; }
-
-.flecha-desplegable { margin-left: auto; font-size: 16px; }
 
 .acciones-superiores { display: flex; align-items: center; justify-content: flex-end; gap: 17px; }
 
@@ -810,6 +792,12 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
 .elemento-chat time { align-self: start; margin-top: 4px; color: var(--texto-tenue); font-size: 8px; }
 
+.lista-conversaciones { display: grid; gap: 4px; }
+.estado-chat-vacio { margin: 8px; color: var(--texto-tenue); font-size: 10px; line-height: 1.6; }
+.formulario-mensaje[hidden] { display: none; }
+.enlace-detalles-chat[hidden] { display: none; }
+.contador-navegacion[hidden] { display: none; }
+
 .conversacion { display: flex; min-width: 0; flex-direction: column; background: var(--panel); }
 
 .encabezado-conversacion { display: flex; min-height: 68px; align-items: center; gap: 11px; padding: 0 18px; border-bottom: 1px solid var(--borde); }
@@ -986,8 +974,6 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
     .marca { font-size: 18px; }
 
-    .etiqueta-ubicacion { display: none; }
-
     .acciones-superiores { gap: 9px; }
 
     .vista-aplicacion { min-height: 100svh; overflow: auto; }
@@ -1036,9 +1022,9 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
 
     .lista-chats .encabezado-panel { padding-bottom: 8px; }
 
-    .elemento-chat { display: none; min-height: 57px; }
+    .lista-conversaciones { display: flex; gap: 7px; overflow-x: auto; }
 
-    .elemento-chat.seleccionado { display: grid; }
+    .elemento-chat { display: grid; flex: 0 0 min(245px, 78vw); min-height: 57px; }
 
     .conversacion { order: 2; min-height: 570px; }
 
@@ -1082,8 +1068,6 @@ body:has(.pantalla:target) .pantalla:not(:target) { display: none; }
     .enlace-superior-autenticacion { right: 18px; font-size: 9px; }
 
     .contador-resultados { width: 21px; height: 21px; }
-
-    .etiqueta-ubicacion { display: none; }
 
     .fila-publicacion { align-items: flex-start; flex-direction: column; }
 
@@ -1239,8 +1223,6 @@ a:hover { color: var(--azul-acento); }
 }
 
 .marca { color: var(--texto); }
-
-.etiqueta-ubicacion { border-color: var(--borde); border-radius: 5px; background: var(--panel); color: var(--texto); }
 
 .boton {
     border-radius: 4px;

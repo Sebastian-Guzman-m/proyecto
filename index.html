@@ -81,9 +81,6 @@
     <section id="pantalla-mapa" class="vista-aplicacion pantalla" aria-label="Mapa social">
         <header class="barra-superior">
         <a class="marca" href="#pantalla-mapa" aria-label="Nexo, mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="etiqueta-ubicacion">
-        <span class="icono-ubicacion" aria-hidden="true"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span>San José, Costa Rica</span><span class="flecha-desplegable"><img class="icono" src="imagenes/iconos/flecha-abajo.svg" alt=""></span>
-        </div>
         <div class="acciones-superiores">
         <a class="boton boton-principal boton-pequeno" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear pin</a><a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
         </div>
@@ -112,9 +109,6 @@
     <section id="crear-plan" class="vista-aplicacion pantalla" aria-label="Crear un plan">
         <header class="barra-superior">
         <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="etiqueta-ubicacion">
-        <span class="icono-ubicacion" aria-hidden="true"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span>San José, Costa Rica</span><span class="flecha-desplegable"><img class="icono" src="imagenes/iconos/flecha-abajo.svg" alt=""></span>
-        </div>
         <div class="acciones-superiores">
         <a class="boton boton-secundario boton-pequeno" href="#pantalla-mapa">Cancelar</a><a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
         </div>
@@ -168,9 +162,6 @@
     <section id="detalle-plan" class="vista-aplicacion pantalla" aria-label="Detalle del plan">
         <header class="barra-superior">
         <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="etiqueta-ubicacion">
-        <span class="icono-ubicacion" aria-hidden="true"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span>San José, Costa Rica</span><span class="flecha-desplegable"><img class="icono" src="imagenes/iconos/flecha-abajo.svg" alt=""></span>
-        </div>
         <div class="acciones-superiores">
         <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
         </div>
@@ -217,9 +208,6 @@
     <section id="pantalla-chat" class="vista-aplicacion pantalla" aria-label="Chat del plan">
         <header class="barra-superior">
         <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="etiqueta-ubicacion">
-        <span class="icono-ubicacion" aria-hidden="true"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span>San José, Costa Rica</span><span class="flecha-desplegable"><img class="icono" src="imagenes/iconos/flecha-abajo.svg" alt=""></span>
-        </div>
         <div class="acciones-superiores">
         <a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
         </div>
@@ -234,9 +222,9 @@
         <span class="subtitulo-seccion">CHATS RECIENTES</span>
         <h1>Conversaciones</h1>
         </div>
-        <span class="contador-resultados">3</span>
+        <span class="contador-resultados">0</span>
         </div>
-        <a class="elemento-chat seleccionado" href="#pantalla-chat"><span class="icono-chat futbol"><img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></span><span><strong>Tarde de fútbol</strong><small>¿A qué hora nos encontramos?</small></span><time>4:49</time></a> <a class="elemento-chat" href="#pantalla-chat"><span class="icono-chat lectura"><img class="icono" src="imagenes/iconos/destello-rosa.svg" alt=""></span><span><strong>Club de lectura</strong><small>¡Llevo el libro que hablamos!</small></span><time>6:03</time></a> <a class="elemento-chat" href="#pantalla-chat"><span class="icono-chat ciclismo"><img class="icono" src="imagenes/iconos/destello-cian.svg" alt=""></span><span><strong>Paseo en bici</strong><small>¿Vamos por la ruta del lago?</small></span><time>8:12</time></a>
+        <div class="lista-conversaciones" aria-live="polite"></div>
         </aside>
     <section class="conversacion" aria-label="Mensajes de Tarde de fútbol">
         <header class="encabezado-conversacion">
@@ -244,7 +232,7 @@
         <img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></div>
         <div>
         <strong>Tarde de fútbol</strong><small>8 personas · La Sabana · Sáb, 7 nov</small></div>
-        <a href="#detalle-plan">Ver detalles del plan</a>
+        <a class="enlace-detalles-chat" href="#detalle-plan">Ver detalles del plan</a>
         </header>
         <div class="lista-mensajes">
         <div class="separador-fecha">SÁBADO, 7 DE NOVIEMBRE</div>
@@ -316,9 +304,6 @@
     <section id="mis-planes" class="vista-aplicacion pantalla" aria-label="Mis planes">
         <header class="barra-superior">
         <a class="marca" href="#pantalla-mapa" aria-label="Nexo, mapa"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
-        <div class="etiqueta-ubicacion">
-        <span class="icono-ubicacion" aria-hidden="true"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span>San José, Costa Rica</span><span class="flecha-desplegable"><img class="icono" src="imagenes/iconos/flecha-abajo.svg" alt=""></span>
-        </div>
         <div class="acciones-superiores">
         <a class="boton boton-principal boton-pequeno" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear pin</a><a class="avatar-usuario" href="#pantalla-perfil" aria-label="Ver mi perfil"><img src="imagenes/avatar.svg" alt=""></a>
         </div>
@@ -571,5 +556,6 @@
         <div id="nota-privacidad" class="oculto-visualmente">Política de privacidad pendiente de redactar.</div>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="javascript/mapa.js"></script>
+    <script defer src="javascript/chat.js"></script>
 </body>
 </html>

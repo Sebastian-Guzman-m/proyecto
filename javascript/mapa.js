@@ -24,6 +24,7 @@
     const detalleAsistentes = document.getElementById("detalle-asistentes");
     const detalleTotalPersonas = document.getElementById("detalle-total-personas");
     const eliminarPinDetalle = document.getElementById("eliminar-pin-detalle");
+    const botonChatDetalle = document.querySelector(".boton-chat-detalle");
     const ejemplos = [
         {
             id: "demo-futbol", lat: 9.9351, lng: -84.1027, nombre: "Tarde de fútbol",
@@ -61,7 +62,11 @@
         informar("No se pudieron recuperar tus pines guardados. Puedes crear nuevos pines.");
     }
 
-    const mapa = L.map("contenedor-mapa").setView(centro, 13);
+    const limitesMundo = L.latLngBounds([-85.05112878, -180], [85.05112878, 180]);
+    const mapa = L.map("contenedor-mapa", {
+        maxBounds: limitesMundo,
+        maxBoundsViscosity: 1
+    }).setView(centro, 13);
     const contenedor = document.getElementById("contenedor-mapa");
     const espacios = {
         "#pantalla-mapa": document.getElementById("espacio-mapa-principal"),
@@ -70,6 +75,8 @@
     };
     const teselas = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
+            noWrap: true,
+            bounds: limitesMundo,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mapa);
     teselas.on("tileerror", () => informar("No se pudo cargar una parte del mapa. Comprueba tu conexión."));
@@ -82,6 +89,14 @@
     const iconoPin = crearIcono("pin-mapa");
     const iconoSeleccion = crearIcono("pin-seleccion");
     const marcadores = L.layerGroup().addTo(mapa);
+
+    function ajustarZoomMinimo() {
+        const tamano = mapa.getSize();
+        const ladoMayor = Math.max(tamano.x, tamano.y);
+        if (!ladoMayor) return;
+        const zoomMinimo = Math.max(0, Math.ceil(Math.log2(ladoMayor / 256)));
+        mapa.setMinZoom(zoomMinimo);
+    }
 
     function guardar() {
         try {
@@ -130,6 +145,7 @@
     }
 
     function renderizarDetalle(pin) {
+        botonChatDetalle.dataset.pinId = pin.id;
         detalleNombre.textContent = pin.nombre;
         detalleCategoria.textContent = categoriaDetalle(pin);
         detalleCreador.replaceChildren(
@@ -168,12 +184,15 @@
         }));
     }
 
+    window.nexoAbrirDetallePin = abrirDetalle;
+
     function eliminarPin(id) {
         if (!pines.some((pin) => pin.id === id)) return;
         pines = pines.filter((pin) => pin.id !== id);
         if (pinSeleccionado === id) pinSeleccionado = null;
         guardar();
         dibujar();
+        window.dispatchEvent(new CustomEvent("nexo:pines-actualizados", { detail: { pines } }));
         if (location.hash === "#detalle-plan") location.hash = "#pantalla-mapa";
     }
 
@@ -345,6 +364,7 @@
         const destino = punto;
         guardar();
         dibujar();
+        window.dispatchEvent(new CustomEvent("nexo:pines-actualizados", { detail: { pines } }));
         formulario.reset();
         mapa.removeLayer(seleccion);
         seleccion = null;
@@ -374,7 +394,10 @@
         }
         contenedor.setAttribute("aria-label", location.hash === "#crear-plan"
             ? "Seleccionar punto de encuentro" : "Mapa de planes");
-        requestAnimationFrame(() => mapa.invalidateSize({ pan: false }));
+        requestAnimationFrame(() => {
+            mapa.invalidateSize({ pan: false });
+            ajustarZoomMinimo();
+        });
     }
     window.addEventListener("hashchange", () => {
         if (location.hash !== "#detalle-plan") pinSeleccionado = null;
@@ -388,6 +411,7 @@
             pines = datos.filter((pin) => coordenadasValidas(pin) && typeof pin.id === "string"
                 && typeof pin.nombre === "string");
             dibujar();
+            window.dispatchEvent(new CustomEvent("nexo:pines-actualizados", { detail: { pines } }));
             const detalleActualizado = pines.find((pin) => pin.id === pinSeleccionado);
             if (detalleActualizado) renderizarDetalle(detalleActualizado);
             else if (pinSeleccionado) {
@@ -400,7 +424,10 @@
     });
     if (window.ResizeObserver) {
         const observador = new ResizeObserver(() => {
-            if (espacios[location.hash]) mapa.invalidateSize({ pan: false });
+            if (espacios[location.hash]) {
+                mapa.invalidateSize({ pan: false });
+                ajustarZoomMinimo();
+            }
         });
         observador.observe(contenedor);
     }
