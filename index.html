@@ -99,10 +99,11 @@
         <span class="subtitulo-seccion">A TU ALREDEDOR</span>
         <h1>Planes cerca</h1>
         </div>
-        <span class="contador-resultados">8</span>
+        <span id="contador-planes-cercanos" class="contador-resultados">0</span>
         </div>
         <p class="texto-secundario descripcion-panel">Explora los planes que pasan cerca de ti</p>
-        <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan futbol"><img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></span><span class="titulo-tarjeta-plan">Tarde de fútbol</span> <span class="ubicacion-plan">La Sabana · cancha 2</span><span class="datos-plan">7 nov · 4:30 p. m. <span>8 personas</span></span> </a> <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan lectura"><img class="icono" src="imagenes/iconos/destello-rosa.svg" alt=""></span><span class="titulo-tarjeta-plan">Club de lectura</span> <span class="ubicacion-plan">Café Miel · Escalante</span><span class="datos-plan">Mañana · 6:00 p. m. <span>5 personas</span></span> </a> <a class="tarjeta-plan" href="#detalle-plan"> <span class="icono-plan ciclismo"><img class="icono" src="imagenes/iconos/destello-cian.svg" alt=""></span><span class="titulo-tarjeta-plan">Paseo en bici</span> <span class="ubicacion-plan">Parque Francia</span><span class="datos-plan">Sáb, 7 nov · 8:00 a. m. <span>12 personas</span></span> </a> <a class="enlace-todos-planes" href="#mis-planes">Ver todos mis planes <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
+        <div id="lista-planes-cercanos" class="lista-planes-cercanos" aria-live="polite"></div>
+        <a class="enlace-todos-planes" href="#mis-planes">Ver todos mis planes <img class="icono" src="imagenes/iconos/flecha-derecha-cian.svg" alt=""></a>
         </aside>
         <div class="area-mapa espacio-mapa" id="espacio-mapa-principal"><div class="mapa-interactivo" id="contenedor-mapa" aria-label="Mapa de planes"></div></div>
         </div>
@@ -134,6 +135,8 @@
         <p class="texto-secundario">Cuéntale a la gente qué van a hacer y cuándo.</p>
         <label for="nombre-plan">¿Qué plan tienes en mente?</label>
         <input id="nombre-plan" required maxlength="120" type="text" placeholder="Ej. Tarde de fútbol" value="Tarde de fútbol">
+        <label for="referencia-plan">Lugar o referencia (opcional)</label>
+        <input id="referencia-plan" maxlength="120" type="text" placeholder="Ej. Cancha 2, Parque La Sabana">
 
         <div class="fila-formulario">
         <div>
@@ -154,7 +157,7 @@
 
         <span class="icono-opcion"><img class="icono" src="imagenes/iconos/circulo-punto-amarillo.svg" alt=""></span><span><strong>Solo en este navegador</strong><small>Este pin todavía no se comparte con otros usuarios</small></span></label></fieldset>
         <div class="fila-publicacion">
-        <p>El pin se guarda en este navegador. Puedes moverlo o eliminarlo desde el mapa.</p>
+        <p>El pin se guarda en este navegador. Su ubicación queda fija al publicarlo; puedes eliminarlo desde el mapa.</p>
         <button class="boton boton-principal" type="submit">Publicar pin <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></button>
         </div>
         </form>
@@ -162,7 +165,7 @@
         </div>
     </section>
 
-    <section id="detalle-plan" class="vista-aplicacion pantalla" aria-label="Detalle del plan Tarde de fútbol">
+    <section id="detalle-plan" class="vista-aplicacion pantalla" aria-label="Detalle del plan">
         <header class="barra-superior">
         <a class="marca" href="#pantalla-mapa" aria-label="Volver al mapa de Nexo"><img class="logo-marca" src="imagenes/iconos/nexo.svg" alt="">nexo</a>
         <div class="etiqueta-ubicacion">
@@ -178,33 +181,35 @@
         </div>
         <aside class="tarjeta-detalle">
         <div class="cabecera-tarjeta-detalle">
-        <span class="subtitulo-seccion">PLAN DEPORTIVO</span><a href="#pantalla-mapa" class="enlace-cerrar" aria-label="Cerrar detalle"><img class="icono" src="imagenes/iconos/cerrar.svg" alt=""></a>
+        <span id="detalle-categoria" class="categoria-detalle">Plan deportivo</span>
+        <div class="acciones-cabecera-detalle">
+        <button id="eliminar-pin-detalle" class="eliminar-pin-detalle" type="button">Eliminar pin</button>
+        <a href="#pantalla-mapa" class="enlace-cerrar" aria-label="Cerrar detalle"><img class="icono" src="imagenes/iconos/cerrar.svg" alt=""></a>
         </div>
-        <span class="categoria-detalle"><img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></span>
-        <h1>Tarde de fútbol</h1>
-        <p class="anfitrion-detalle">Creado por <strong>Mateo Rojas</strong> · anfitrión</p>
+        </div>
+        <h1 id="detalle-nombre">Tarde de fútbol</h1>
+        <p id="detalle-creador" class="anfitrion-detalle">Creado por <strong>Mateo Rojas</strong> · anfitrión</p>
         <div class="datos-detalle">
         <div>
-        <span class="icono-dato"><img class="icono" src="imagenes/iconos/reloj-cian.svg" alt=""></span><span><strong>Fecha y hora</strong><small>Sábado, 7 de noviembre · 4:30 p. m.</small></span>
+        <span class="icono-dato"><img class="icono" src="imagenes/iconos/reloj-cian.svg" alt=""></span><span><strong>Fecha y hora</strong><small id="detalle-fecha-hora">Sábado, 7 de noviembre · 4:30 p. m.</small></span>
         </div>
         <div>
-        <span class="icono-dato"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span><strong>Punto de encuentro</strong><small>Cancha 2 · Parque La Sabana<br>San José, Costa Rica</small></span>
+        <span class="icono-dato"><img class="icono" src="imagenes/iconos/marcador-mapa-cian.svg" alt=""></span><span><strong>Punto de encuentro</strong><small id="detalle-lugar">Cancha 2 · Parque La Sabana</small></span>
         </div>
         </div>
         <div class="descripcion-detalle">
         <h2>Sobre este plan</h2>
-        <p>Partido amistoso para pasar la tarde y conocer gente nueva. No hace falta traer equipo: armamos los grupos al llegar.</p>
+        <p id="detalle-descripcion">Partido amistoso para pasar la tarde y conocer gente nueva. No hace falta traer equipo: armamos los grupos al llegar.</p>
         </div>
         <div class="encabezado-asistentes">
         <h2>Personas que se unen</h2>
-        <span>8 personas</span>
+        <span id="detalle-total-personas" class="total-personas">8 personas</span>
         </div>
-        <div class="grupo-avatares">
-        <img class="avatar-persona" src="imagenes/avatar.svg" alt=""><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><img class="avatar-persona" src="imagenes/avatar.svg" alt=""><span class="avatar-persona avatares-adicionales">+3</span>
+        <div id="detalle-asistentes" class="grupo-avatares" aria-live="polite"></div>
+        <div class="acciones-detalle">
+        <a class="boton boton-principal boton-chat-detalle" href="#pantalla-chat">Unirme al chat <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></a>
+        <a class="guardar-plan" href="#mis-planes"><img class="icono" src="imagenes/iconos/estrella.svg" alt=""> Guardar plan</a>
         </div>
-        <a class="boton boton-principal boton-chat-detalle" href="#pantalla-chat">Unirme al chat grupal <img class="icono" src="imagenes/iconos/flecha-derecha-oscuro.svg" alt=""></a>
-        <p class="nota-detalle">Al unirte, podrás hablar con el creador y el grupo.</p>
-        <a class="guardar-plan" href="#mis-planes"><img class="icono" src="imagenes/iconos/estrella.svg" alt=""> Guardar este plan</a>
         </aside>
         </div>
     </section>
@@ -332,29 +337,9 @@
         <a class="boton boton-principal" href="#crear-plan"><img class="icono" src="imagenes/iconos/mas-oscuro.svg" alt=""> Crear un plan</a>
         </div>
         <nav class="pestanas-planes" aria-label="Filtrar planes">
-        <a class="seleccionada" href="#mis-planes">Próximos <span>3</span></a><a href="#mis-planes">Organizados</a><a href="#mis-planes">Pasados</a>
+        <a class="seleccionada" href="#mis-planes">Próximos <span id="contador-mis-planes">0</span></a><a href="#mis-planes">Organizados</a><a href="#mis-planes">Pasados</a>
         </nav>
-        <div class="cuadricula-mis-planes">
-        <a class="tarjeta-mi-plan" href="#detalle-plan"><span class="ilustracion-tarjeta ilustracion-futbol"><img class="icono" src="imagenes/iconos/destello-amarillo.svg" alt=""></span><span class="subtitulo-seccion">DEPORTE · LA SABANA</span>
-        <h2>Tarde de fútbol</h2>
-        <p>Cancha 2 · Parque La Sabana</p>
-        <div class="datos-mi-plan">
-        <span><img class="icono" src="imagenes/iconos/reloj.svg" alt=""> Sáb, 7 nov · 4:30 p. m.</span><span>8 personas</span>
-        </div>
-        <span class="pie-tarjeta-plan">Ver plan <span><img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></span></span></a><a class="tarjeta-mi-plan" href="#detalle-plan"><span class="ilustracion-tarjeta ilustracion-lectura"><img class="icono" src="imagenes/iconos/destello-rosa.svg" alt=""></span><span class="subtitulo-seccion">CULTURA · ESCALANTE</span>
-        <h2>Club de lectura</h2>
-        <p>Café Miel · Barrio Escalante</p>
-        <div class="datos-mi-plan">
-        <span><img class="icono" src="imagenes/iconos/reloj.svg" alt=""> Mañana · 6:00 p. m.</span><span>5 personas</span>
-        </div>
-        <span class="pie-tarjeta-plan">Ver plan <span><img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></span></span></a><a class="tarjeta-mi-plan" href="#detalle-plan"><span class="ilustracion-tarjeta ilustracion-ciclismo"><img class="icono" src="imagenes/iconos/destello-cian.svg" alt=""></span><span class="subtitulo-seccion">AIRE LIBRE · PARQUE FRANCIA</span>
-        <h2>Paseo en bici</h2>
-        <p>Parque Francia · Escalante</p>
-        <div class="datos-mi-plan">
-        <span><img class="icono" src="imagenes/iconos/reloj.svg" alt=""> Sáb, 7 nov · 8:00 a. m.</span><span>12 personas</span>
-        </div>
-        <span class="pie-tarjeta-plan">Ver plan <span><img class="icono" src="imagenes/iconos/flecha-derecha.svg" alt=""></span></span></a>
-        </div>
+        <div id="cuadricula-mis-planes" class="cuadricula-mis-planes" aria-live="polite"></div>
         </div>
         </div>
     </section>
